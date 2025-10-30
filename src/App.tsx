@@ -105,6 +105,7 @@ function App(): JSX.Element {
   const [hydrated, setHydrated] = React.useState<boolean>(false);
   const [quantumNx, setQuantumNx] = React.useState<number>(2);
   const [quantumNy, setQuantumNy] = React.useState<number>(2);
+  const [quantumAnimating, setQuantumAnimating] = React.useState<boolean>(true);
 
   const handlePlaintextChange = React.useCallback((nextValue: string) => {
     if (nextValue.length > MAX_PLAINTEXT_LENGTH) {
@@ -180,6 +181,43 @@ function App(): JSX.Element {
     }
   }, [deck, hydrated]);
 
+  // Quantum field animation - slow oscillation through parameter space
+  React.useEffect(() => {
+    if (!quantumAnimating) {
+      return;
+    }
+
+    let animationFrameId: number;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = (currentTime - startTime) / 1000; // seconds
+
+      // Slow oscillation with different periods for nx and ny
+      // Creates organic, breathing patterns
+      // nx oscillates with period ~20 seconds, range 0-5
+      // ny oscillates with period ~27 seconds (golden ratio relative), range 0-5
+      const nxFloat = 2.5 + 2.5 * Math.sin(elapsed * Math.PI / 10);
+      const nyFloat = 2.5 + 2.5 * Math.cos(elapsed * Math.PI / 13.5);
+
+      const newNx = Math.round(nxFloat);
+      const newNy = Math.round(nyFloat);
+
+      setQuantumNx(newNx);
+      setQuantumNy(newNy);
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [quantumAnimating]);
+
   const handleResetSession = React.useCallback(() => {
     setPlaintext("");
     setLimitReached(false);
@@ -211,6 +249,8 @@ function App(): JSX.Element {
         ny={quantumNy}
         onNxChange={setQuantumNx}
         onNyChange={setQuantumNy}
+        animating={quantumAnimating}
+        onAnimatingToggle={setQuantumAnimating}
       />
       <header style={headerStyle}>
         <h1 style={{ fontSize: "2rem", margin: 0 }}>Solitaire Cipher Playground</h1>
