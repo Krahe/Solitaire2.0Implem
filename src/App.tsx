@@ -2,17 +2,23 @@ import React from "react";
 import { DeckInput } from "./components/DeckInput";
 import { PlaintextInput } from "./components/PlaintextInput";
 import { CipherEngine } from "./components/CipherEngine";
+import { QuantumBackground } from "./components/QuantumBackground";
+import { QuantumControls } from "./components/QuantumControls";
 import { sanitizeToCipherAlphabet } from "./logic/classifier";
 import type { Deck } from "./logic/deck";
 import { parseDeckVector } from "./logic/parseDeck";
 
 const containerStyle: React.CSSProperties = {
+  position: "relative",
   minHeight: "100vh",
   padding: "2rem 1.5rem 4rem",
   background: "radial-gradient(circle at top, #1e293b, #020617 60%)",
+  isolation: "isolate", // Create stacking context
 };
 
 const gridStyle: React.CSSProperties = {
+  position: "relative",
+  zIndex: 1,
   display: "grid",
   gap: "1.5rem",
   maxWidth: "1080px",
@@ -97,6 +103,8 @@ function App(): JSX.Element {
   const [deckInputValue, setDeckInputValue] = React.useState<string>("");
   const [manualDeckVersion, setManualDeckVersion] = React.useState<number>(0);
   const [hydrated, setHydrated] = React.useState<boolean>(false);
+  const [quantumNx, setQuantumNx] = React.useState<number>(2);
+  const [quantumNy, setQuantumNy] = React.useState<number>(2);
 
   const handlePlaintextChange = React.useCallback((nextValue: string) => {
     if (nextValue.length > MAX_PLAINTEXT_LENGTH) {
@@ -197,6 +205,13 @@ function App(): JSX.Element {
 
   return (
     <div style={containerStyle}>
+      <QuantumBackground nx={quantumNx} ny={quantumNy} opacity={0.15} />
+      <QuantumControls
+        nx={quantumNx}
+        ny={quantumNy}
+        onNxChange={setQuantumNx}
+        onNyChange={setQuantumNy}
+      />
       <header style={headerStyle}>
         <h1 style={{ fontSize: "2rem", margin: 0 }}>Solitaire Cipher Playground</h1>
         <p style={{ marginTop: "0.75rem", color: "#cbd5f5", maxWidth: "720px", marginInline: "auto" }}>
