@@ -1,11 +1,13 @@
 import React from "react";
-import type { Deck } from "../logic/deck";
+import { createOrderedDeck, shuffleDeck, type Deck } from "../logic/deck";
 import { parseDeckVector, type ParseResult } from "../logic/parseDeck";
 
 export interface DeckInputProps {
   onSubmit(deck: Deck): void;
   initialValue?: string;
 }
+
+const stringifyDeck = (deck: Deck): string => deck.join(", ");
 
 export const DeckInput: React.FC<DeckInputProps> = ({ onSubmit, initialValue = "" }) => {
   const [raw, setRaw] = React.useState(initialValue);
@@ -26,6 +28,22 @@ export const DeckInput: React.FC<DeckInputProps> = ({ onSubmit, initialValue = "
     if (parsed.ok && parsed.deck) {
       onSubmit(parsed.deck);
     }
+  };
+
+  const applyDeck = React.useCallback(
+    (nextDeck: Deck) => {
+      setRaw(stringifyDeck(nextDeck));
+      onSubmit(nextDeck);
+    },
+    [onSubmit],
+  );
+
+  const handleLoadOrdered = () => {
+    applyDeck(createOrderedDeck());
+  };
+
+  const handleShuffleDeck = () => {
+    applyDeck(shuffleDeck());
   };
 
   return (
@@ -64,6 +82,19 @@ export const DeckInput: React.FC<DeckInputProps> = ({ onSubmit, initialValue = "
         >
           Use this deck
         </button>
+        <div style={styles.helperRow}>
+          <button type="button" style={styles.secondaryButton} onClick={handleLoadOrdered}>
+            Load ordered deck
+          </button>
+          <button type="button" style={styles.secondaryButton} onClick={handleShuffleDeck}>
+            Shuffle a new deck
+          </button>
+        </div>
+        <p style={styles.helperText}>
+          Shuffling prefers the browser&apos;s cryptographic random generator when available, falling back to
+          Math.random only if necessary. Use the ordered deck if you want a canonical starting point for
+          teaching moments or reproducible missions.
+        </p>
       </form>
     </section>
   );
@@ -131,5 +162,27 @@ const styles: Record<string, React.CSSProperties> = {
   buttonDisabled: {
     opacity: 0.4,
     cursor: "not-allowed",
+  },
+  helperRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "0.5rem",
+  },
+  secondaryButton: {
+    backgroundColor: "#1f2937",
+    color: "#e2e8f0",
+    border: "1px solid #334155",
+    borderRadius: "0.65rem",
+    padding: "0.5rem 0.75rem",
+    fontWeight: 600,
+    cursor: "pointer",
+    fontSize: "0.9rem",
+    transition: "background-color 0.2s ease, border-color 0.2s ease",
+  },
+  helperText: {
+    margin: 0,
+    fontSize: "0.8rem",
+    color: "#94a3b8",
+    lineHeight: 1.5,
   },
 };

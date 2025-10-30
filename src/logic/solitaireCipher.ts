@@ -11,13 +11,18 @@ const charToValue = new Map<string, number>(
 
 const valueToChar = Array.from(CIPHER_ALPHABET);
 
-function moveCardDown(deck: Deck, card: number, steps: number): Deck {
+export function moveCardDown(deck: Deck, card: number, steps: number): Deck {
   let working = [...deck];
   for (let step = 0; step < steps; step += 1) {
     const index = working.indexOf(card);
-    const nextIndex = (index + 1) % working.length;
-    working = [...working.slice(0, index), ...working.slice(index + 1)];
-    working.splice(nextIndex, 0, card);
+    if (index === -1) {
+      throw new Error(`Card ${card} is not present in the deck.`);
+    }
+
+    const withoutCard = [...working.slice(0, index), ...working.slice(index + 1)];
+    const targetIndex = index === working.length - 1 ? 1 : index + 1;
+    withoutCard.splice(targetIndex, 0, card);
+    working = withoutCard;
   }
   return working;
 }

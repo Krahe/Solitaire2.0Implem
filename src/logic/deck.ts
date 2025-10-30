@@ -22,6 +22,28 @@ export interface ShuffleOptions {
   random?: () => number;
 }
 
+function getSecureRandom(): (() => number) | null {
+  if (typeof globalThis === "undefined") {
+    return null;
+  }
+
+  const cryptoApi: { getRandomValues?(array: Uint32Array): Uint32Array } | undefined =
+    (globalThis as typeof globalThis & { crypto?: Crypto }).crypto ??
+    (globalThis as typeof globalThis & {
+      msCrypto?: { getRandomValues(array: Uint32Array): Uint32Array };
+    }).msCrypto;
+
+  if (!cryptoApi || typeof cryptoApi.getRandomValues !== "function") {
+    return null;
+  }
+
+  const buffer = new Uint32Array(1);
+  return () => {
+    cryptoApi.getRandomValues(buffer);
+    return buffer[0] / 0x100000000;
+  };
+}
+
 function fisherYatesShuffle(deck: Deck, random: () => number): Deck {
   const copy = [...deck];
   for (let i = copy.length - 1; i > 0; i -= 1) {
@@ -38,8 +60,10 @@ function fisherYatesShuffle(deck: Deck, random: () => number): Deck {
  *
  * @param options Optional configuration (e.g., deterministic RNG for tests).
  * @returns A new deck vector containing each card 1-54 exactly once.
+ *          Uses the browser's cryptographically secure RNG when available.
  */
 export function shuffleDeck(options: ShuffleOptions = {}): Deck {
-  const { random = Math.random } = options;
+  const secureRandom = getSecureRandom();
+  const { random = secureRandom ?? Math.random } = options;
   return fisherYatesShuffle(createOrderedDeck(), random);
 }
