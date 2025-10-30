@@ -11,12 +11,14 @@ const stringifyDeck = (deck: Deck): string => deck.join(", ");
 
 export const DeckInput: React.FC<DeckInputProps> = ({ onSubmit, initialValue = "" }) => {
   const [raw, setRaw] = React.useState(initialValue);
+  const previousInitialRef = React.useRef(initialValue);
 
   React.useEffect(() => {
-    if (initialValue !== raw) {
-      setRaw(initialValue);
+    if (initialValue !== previousInitialRef.current) {
+      previousInitialRef.current = initialValue;
+      setRaw((current) => (current === initialValue ? current : initialValue));
     }
-  }, [initialValue, raw]);
+  }, [initialValue]);
 
   const parsed: ParseResult = React.useMemo(() => {
     if (raw.trim().length === 0) {
