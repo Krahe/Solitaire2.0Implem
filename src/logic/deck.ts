@@ -39,7 +39,7 @@ function getSecureRandom(): (() => number) | null {
 
   const buffer = new Uint32Array(1);
   return () => {
-    cryptoApi.getRandomValues(buffer);
+    cryptoApi.getRandomValues!(buffer);
     return buffer[0] / 0x100000000;
   };
 }
