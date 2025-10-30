@@ -47,7 +47,21 @@ export const QuantumBackground: React.FC<QuantumBackgroundProps> = ({
     // Render heatmap
     const render = () => {
       const rect = canvas.getBoundingClientRect();
-      ctx.clearRect(0, 0, rect.width, rect.height);
+
+      // First, draw the radial gradient background
+      const gradient = ctx.createRadialGradient(
+        rect.width / 2,
+        0,
+        0,
+        rect.width / 2,
+        0,
+        rect.height * 0.6
+      );
+      gradient.addColorStop(0, "#1e293b"); // slate-800
+      gradient.addColorStop(1, "#020617"); // slate-950
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, rect.width, rect.height);
 
       const cellWidth = rect.width / grid.width;
       const cellHeight = rect.height / grid.height;
@@ -71,14 +85,14 @@ export const QuantumBackground: React.FC<QuantumBackgroundProps> = ({
           const probability = probabilityGrid[i][j];
           const intensity = maxProb > 0 ? probability / maxProb : 0;
 
-          // Color scheme: deep blue to cyan gradient
-          // Low intensity: #1e293b (slate-800)
+          // Color scheme: deep blue to cyan/indigo gradient
+          // Low intensity: darker tones
           // High intensity: #38bdf8 (sky-400) with hints of #818cf8 (indigo-400)
-          const r = Math.floor(56 + intensity * (56 - 30));  // 56 -> 56 (stay dark)
-          const g = Math.floor(65 + intensity * (189 - 65)); // 65 -> 189 (cyan)
-          const b = Math.floor(91 + intensity * (248 - 91)); // 91 -> 248 (bright)
+          const r = Math.floor(30 + intensity * (129 - 30));  // 30 -> 129 (indigo)
+          const g = Math.floor(41 + intensity * (189 - 41));  // 41 -> 189 (cyan)
+          const b = Math.floor(59 + intensity * (248 - 59));  // 59 -> 248 (bright)
 
-          const alpha = opacity * (0.3 + 0.7 * intensity);
+          const alpha = opacity * (0.4 + 0.6 * intensity);
 
           ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
           ctx.fillRect(

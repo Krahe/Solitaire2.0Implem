@@ -12,7 +12,7 @@ const containerStyle: React.CSSProperties = {
   position: "relative",
   minHeight: "100vh",
   padding: "2rem 1.5rem 4rem",
-  background: "radial-gradient(circle at top, #1e293b, #020617 60%)",
+  // Background now rendered by QuantumBackground component
   isolation: "isolate", // Create stacking context
 };
 
@@ -205,7 +205,7 @@ function App(): JSX.Element {
 
   return (
     <div style={containerStyle}>
-      <QuantumBackground nx={quantumNx} ny={quantumNy} opacity={0.15} />
+      <QuantumBackground nx={quantumNx} ny={quantumNy} opacity={0.35} />
       <QuantumControls
         nx={quantumNx}
         ny={quantumNy}
