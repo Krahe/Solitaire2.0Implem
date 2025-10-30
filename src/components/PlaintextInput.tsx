@@ -25,7 +25,8 @@ export const PlaintextInput: React.FC<PlaintextInputProps> = ({
         Paste or type your message below. We&apos;ll normalize it into the
         52-character Solitaire alphabet automatically. Inputs longer than
         {` ${maxLength.toLocaleString()} `}
-        characters are truncated to keep the browser responsive.
+        characters are truncated to keep the browser responsive. Your draft is saved locally so you can
+        return later—tap “Clear saved session” in the header when you want to start fresh.
       </p>
       <label style={styles.label} htmlFor="plaintext-input">
         Raw input

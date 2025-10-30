@@ -12,6 +12,12 @@ const stringifyDeck = (deck: Deck): string => deck.join(", ");
 export const DeckInput: React.FC<DeckInputProps> = ({ onSubmit, initialValue = "" }) => {
   const [raw, setRaw] = React.useState(initialValue);
 
+  React.useEffect(() => {
+    if (initialValue !== raw) {
+      setRaw(initialValue);
+    }
+  }, [initialValue, raw]);
+
   const parsed: ParseResult = React.useMemo(() => {
     if (raw.trim().length === 0) {
       return {
@@ -92,8 +98,8 @@ export const DeckInput: React.FC<DeckInputProps> = ({ onSubmit, initialValue = "
         </div>
         <p style={styles.helperText}>
           Shuffling prefers the browser&apos;s cryptographic random generator when available, falling back to
-          Math.random only if necessary. Use the ordered deck if you want a canonical starting point for
-          teaching moments or reproducible missions.
+          Math.random only if necessary. Your latest deck vector is saved locally so you can resume
+          missions later; hit the mission reset button in the header to clear it.
         </p>
       </form>
     </section>

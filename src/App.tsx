@@ -4,6 +4,7 @@ import { PlaintextInput } from "./components/PlaintextInput";
 import { CipherEngine } from "./components/CipherEngine";
 import { sanitizeToCipherAlphabet } from "./logic/classifier";
 import type { Deck } from "./logic/deck";
+import { parseDeckVector } from "./logic/parseDeck";
 
 const containerStyle: React.CSSProperties = {
   minHeight: "100vh",
@@ -22,6 +23,12 @@ const headerStyle: React.CSSProperties = {
   color: "#e2e8f0",
   textAlign: "center",
   marginBottom: "2rem",
+};
+
+const headerActionsStyle: React.CSSProperties = {
+  marginTop: "1.5rem",
+  display: "flex",
+  justifyContent: "center",
 };
 
 const deckPreviewStyle: React.CSSProperties = {
@@ -58,14 +65,38 @@ const emptyDeckStyle: React.CSSProperties = {
   fontStyle: "italic",
 };
 
+const resetButtonStyle: React.CSSProperties = {
+  backgroundColor: "#ef4444",
+  color: "#0b1120",
+  border: "none",
+  borderRadius: "999px",
+  padding: "0.6rem 1.1rem",
+  fontWeight: 600,
+  cursor: "pointer",
+  fontSize: "0.95rem",
+  transition: "background-color 0.2s ease, transform 0.2s ease",
+};
+
+const resetButtonDisabledStyle: React.CSSProperties = {
+  opacity: 0.4,
+  cursor: "not-allowed",
+};
+
 const MAX_PLAINTEXT_LENGTH = 100_000;
+
+const STORAGE_KEYS = {
+  plaintext: "solitaire.playground.plaintext",
+  deckVector: "solitaire.playground.deckVector",
+} as const;
 
 function App(): JSX.Element {
   const [plaintext, setPlaintext] = React.useState<string>("");
   const [limitReached, setLimitReached] = React.useState<boolean>(false);
   const sanitized = React.useMemo(() => sanitizeToCipherAlphabet(plaintext), [plaintext]);
   const [deck, setDeck] = React.useState<Deck | null>(null);
+  const [deckInputValue, setDeckInputValue] = React.useState<string>("");
   const [manualDeckVersion, setManualDeckVersion] = React.useState<number>(0);
+  const [hydrated, setHydrated] = React.useState<boolean>(false);
 
   const handlePlaintextChange = React.useCallback((nextValue: string) => {
     if (nextValue.length > MAX_PLAINTEXT_LENGTH) {
@@ -77,6 +108,93 @@ function App(): JSX.Element {
     }
   }, []);
 
+  React.useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      const storedPlaintext = window.localStorage.getItem(STORAGE_KEYS.plaintext);
+      if (storedPlaintext) {
+        handlePlaintextChange(storedPlaintext);
+      }
+
+      const storedDeck = window.localStorage.getItem(STORAGE_KEYS.deckVector);
+      if (storedDeck) {
+        setDeckInputValue(storedDeck);
+        const parsed = parseDeckVector(storedDeck);
+        if (parsed.ok && parsed.deck) {
+          setDeck(parsed.deck);
+          setManualDeckVersion((version) => version + 1);
+        }
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to restore Solitaire session", error);
+    } finally {
+      setHydrated(true);
+    }
+  }, [handlePlaintextChange]);
+
+  React.useEffect(() => {
+    if (!hydrated || typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      if (plaintext.length === 0) {
+        window.localStorage.removeItem(STORAGE_KEYS.plaintext);
+      } else {
+        window.localStorage.setItem(STORAGE_KEYS.plaintext, plaintext);
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to persist plaintext", error);
+    }
+  }, [plaintext, hydrated]);
+
+  React.useEffect(() => {
+    if (!hydrated || typeof window === "undefined") {
+      return;
+    }
+
+    if (!deck || deck.length !== 54) {
+      return;
+    }
+
+    try {
+      const serialized = deck.join(", ");
+      window.localStorage.setItem(STORAGE_KEYS.deckVector, serialized);
+      setDeckInputValue(serialized);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to persist deck vector", error);
+    }
+  }, [deck, hydrated]);
+
+  const handleResetSession = React.useCallback(() => {
+    setPlaintext("");
+    setLimitReached(false);
+    setDeck(null);
+    setManualDeckVersion((version) => version + 1);
+
+    setDeckInputValue("");
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      window.localStorage.removeItem(STORAGE_KEYS.plaintext);
+      window.localStorage.removeItem(STORAGE_KEYS.deckVector);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to clear stored session", error);
+    }
+  }, []);
+
+  const hasSessionData = plaintext.length > 0 || (deck?.length ?? 0) > 0;
+
   return (
     <div style={containerStyle}>
       <header style={headerStyle}>
@@ -85,6 +203,19 @@ function App(): JSX.Element {
           Prepare your plaintext and load a deck vector. We&apos;ll sanitize Unicode text into the
           classic 52-symbol alphabet and make sure your deck is ready for the Solitaire cipher dance.
         </p>
+        <div style={headerActionsStyle}>
+          <button
+            type="button"
+            onClick={handleResetSession}
+            style={{
+              ...resetButtonStyle,
+              ...(hasSessionData ? {} : resetButtonDisabledStyle),
+            }}
+            disabled={!hasSessionData}
+          >
+            Clear saved session
+          </button>
+        </div>
       </header>
       <div style={gridStyle}>
         <PlaintextInput
@@ -99,6 +230,7 @@ function App(): JSX.Element {
             setDeck(newDeck);
             setManualDeckVersion((version) => version + 1);
           }}
+          initialValue={deckInputValue}
         />
         <section style={deckPreviewStyle}>
           <div style={deckBadgeStyle}>{deck ? "Deck loaded" : "Deck pending"}</div>
