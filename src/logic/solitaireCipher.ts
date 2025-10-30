@@ -107,36 +107,49 @@ function valuesToText(values: number[]): string {
   return values.map((value) => valueToChar[(value - 1) % MODULUS]).join("");
 }
 
+export interface CipherWarning {
+  reusedKeystream: boolean;
+}
+
 export interface CipherResult {
   output: string;
   keystream: number[];
   finalDeck: Deck;
+  warning?: CipherWarning;
 }
 
-export function encrypt(text: string, deck: Deck): CipherResult {
+interface CipherOptions {
+  continuedFromPreviousRun?: boolean;
+}
+
+export function encrypt(text: string, deck: Deck, options?: CipherOptions): CipherResult {
   const values = textToValues(text);
   const { deck: finalDeck, keystream } = generateKeystream(deck, values.length);
   const encryptedValues = values.map((value, index) => {
     const ks = keystream[index];
     return ((value + ks - 1) % MODULUS) + 1;
   });
+  const continuedFromPreviousRun = options?.continuedFromPreviousRun === true;
   return {
     output: valuesToText(encryptedValues),
     keystream,
     finalDeck,
+    warning: continuedFromPreviousRun ? { reusedKeystream: true } : undefined,
   };
 }
 
-export function decrypt(text: string, deck: Deck): CipherResult {
+export function decrypt(text: string, deck: Deck, options?: CipherOptions): CipherResult {
   const values = textToValues(text);
   const { deck: finalDeck, keystream } = generateKeystream(deck, values.length);
   const decryptedValues = values.map((value, index) => {
     const ks = keystream[index];
     return ((value - ks + MODULUS - 1) % MODULUS) + 1;
   });
+  const continuedFromPreviousRun = options?.continuedFromPreviousRun === true;
   return {
     output: valuesToText(decryptedValues),
     keystream,
     finalDeck,
+    warning: continuedFromPreviousRun ? { reusedKeystream: true } : undefined,
   };
 }

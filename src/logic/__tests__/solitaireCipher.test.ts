@@ -2,7 +2,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { moveCardDown, performSolitaireRound } from "../solitaireCipher";
+import { encrypt, moveCardDown, performSolitaireRound } from "../solitaireCipher";
 import { createOrderedDeck } from "../deck";
 
 const JOKER_A = 53;
@@ -36,5 +36,13 @@ describe("performSolitaireRound", () => {
     const { deck, output } = performSolitaireRound(ordered);
     expect(output).toBe(4);
     expect(deck.length).toBe(ordered.length);
+  });
+});
+
+describe("encrypt warnings", () => {
+  it("flags continued runs when the caller reuses a keystream", () => {
+    const ordered = createOrderedDeck();
+    const result = encrypt("AAAA", ordered, { continuedFromPreviousRun: true });
+    expect(result.warning).toEqual({ reusedKeystream: true });
   });
 });
