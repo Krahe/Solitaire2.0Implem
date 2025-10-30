@@ -1,6 +1,6 @@
 import React from "react";
 import type { Deck } from "../logic/deck";
-import { decrypt, encrypt } from "../logic/solitaireCipher";
+import { decrypt, encrypt, type CipherWarning } from "../logic/solitaireCipher";
 
 export interface CipherEngineProps {
   sanitizedText: string;
@@ -158,6 +158,7 @@ export const CipherEngine: React.FC<CipherEngineProps> = ({
   const [isRunning, setIsRunning] = React.useState(false);
   const [mode, setMode] = React.useState<"encrypt" | "decrypt">("encrypt");
   const [pendingDeck, setPendingDeck] = React.useState<Deck | null>(null);
+  const [warning, setWarning] = React.useState<CipherWarning | null>(null);
 
   const sanitizedLength = sanitizedText.length;
   const deckReady = deck !== null;
@@ -173,18 +174,24 @@ export const CipherEngine: React.FC<CipherEngineProps> = ({
       return;
     }
 
+    const continuedFromPreviousRun = pendingDeck !== null;
+
     setIsRunning(true);
     setError(null);
 
     try {
       const timer = typeof performance !== "undefined" ? performance : { now: () => Date.now() };
       const start = timer.now();
-      const result = mode === "encrypt" ? encrypt(sanitizedText, deck) : decrypt(sanitizedText, deck);
+      const result =
+        mode === "encrypt"
+          ? encrypt(sanitizedText, deck, { continuedFromPreviousRun })
+          : decrypt(sanitizedText, deck, { continuedFromPreviousRun });
       const end = timer.now();
 
       setResultText(result.output);
       setKeystreamPreview(result.keystream.slice(0, KEYSTREAM_PREVIEW));
       setPendingDeck(result.finalDeck);
+      setWarning(result.warning ?? null);
       setStatusMessage(
         `${mode === "encrypt" ? "Encrypted" : "Decrypted"} ${sanitizedLength.toLocaleString()} characters in ${(end -
           start).toFixed(1)} ms. Apply the advanced deck below if you want to continue the sequence.`,
@@ -202,7 +209,7 @@ export const CipherEngine: React.FC<CipherEngineProps> = ({
     setResultText("");
     setKeystreamPreview([]);
     setError(null);
-    setPendingDeck(null);
+    setWarning(null);
   }, [sanitizedText, manualDeckVersion, mode]);
 
   React.useEffect(() => {
@@ -273,27 +280,47 @@ export const CipherEngine: React.FC<CipherEngineProps> = ({
           {mode === "encrypt" ? "Encrypt sanitized plaintext" : "Decrypt sanitized ciphertext"}
         </button>
         {pendingDeck ? (
-          <button
-            type="button"
-            onClick={() => {
-              if (pendingDeck) {
-                onDeckUpdate(pendingDeck);
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                if (pendingDeck) {
+                  onDeckUpdate(pendingDeck);
+                  setPendingDeck(null);
+                  setWarning(null);
+                  setStatusMessage("Advanced deck applied. Ready for the next round.");
+                }
+              }}
+              style={{
+                ...styles.secondaryButton,
+                ...(deck && pendingDeck && decksMatch(deck, pendingDeck) ? styles.runButtonDisabled : {}),
+              }}
+              disabled={deck && pendingDeck ? decksMatch(deck, pendingDeck) : false}
+            >
+              Use advanced deck for next run
+            </button>
+            <button
+              type="button"
+              onClick={() => {
                 setPendingDeck(null);
-                setStatusMessage("Advanced deck applied. Ready for the next round.");
-              }
-            }}
-            style={{
-              ...styles.secondaryButton,
-              ...(deck && pendingDeck && decksMatch(deck, pendingDeck) ? styles.runButtonDisabled : {}),
-            }}
-            disabled={deck && pendingDeck ? decksMatch(deck, pendingDeck) : false}
-          >
-            Use advanced deck for next run
-          </button>
+                setWarning(null);
+                setStatusMessage("Pending advanced deck dismissed. Current deck remains unchanged.");
+              }}
+              style={styles.secondaryButton}
+            >
+              Dismiss pending deck
+            </button>
+          </>
         ) : null}
         <span style={styles.status}>{statusMessage}</span>
       </div>
       {error ? <div style={styles.error}>{error}</div> : null}
+      {warning ? (
+        <div style={{ ...styles.warning, fontWeight: 600 }}>
+          Warning: You just reused a keystream without applying the previously advanced deck. Apply or dismiss the
+          pending deck before continuing to avoid keystream reuse.
+        </div>
+      ) : null}
       {pendingDeck ? (
         <div style={styles.info}>
           Your original deck stays untouched until you apply the advanced deck. This mirrors using the same key
