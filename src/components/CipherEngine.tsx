@@ -213,6 +213,12 @@ export const CipherEngine: React.FC<CipherEngineProps> = ({
   }, [sanitizedText, manualDeckVersion, mode]);
 
   React.useEffect(() => {
+    // A freshly loaded manual deck should discard any queued advanced deck so the next run starts clean.
+    setPendingDeck(null);
+    setWarning(null);
+  }, [manualDeckVersion]);
+
+  React.useEffect(() => {
     if (resultText.length > 0) {
       return;
     }
