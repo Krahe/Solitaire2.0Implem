@@ -64,13 +64,18 @@ function outputCardValue(deck: Deck): number | null {
   return card;
 }
 
-export function performSolitaireRound(deck: Deck): { deck: Deck; output: number | null } {
+export function advanceDeckOneStep(deck: Deck): Deck {
   let working = moveCardDown(deck, JOKER_A, 1);
   working = moveCardDown(working, JOKER_B, 2);
   working = tripleCut(working);
   working = countCut(working);
-  const output = outputCardValue(working);
-  return { deck: working, output };
+  return working;
+}
+
+export function performSolitaireRound(deck: Deck): { deck: Deck; output: number | null } {
+  const advancedDeck = advanceDeckOneStep(deck);
+  const output = outputCardValue(advancedDeck);
+  return { deck: advancedDeck, output };
 }
 
 export function generateKeystream(initialDeck: Deck, length: number): { deck: Deck; keystream: number[] } {
