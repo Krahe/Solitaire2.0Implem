@@ -148,6 +148,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: theme.typography.sizeMD,
     fontFamily: theme.typography.mono,
     lineHeight: 1.5,
+    fontFamily: theme.typography.mono,
   },
   successMessage: {
     fontSize: theme.typography.sizeSM,
@@ -173,6 +174,7 @@ const styles: Record<string, React.CSSProperties> = {
   buttonDisabled: {
     opacity: 0.4,
     cursor: "not-allowed",
+    boxShadow: "none",
   },
   helperRow: {
     display: "flex",

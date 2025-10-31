@@ -62,6 +62,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: theme.typography.mono,
     lineHeight: 1.5,
     minHeight: "6rem",
+    fontFamily: theme.typography.mono,
   },
   buttonRow: {
     display: "flex",
@@ -115,6 +116,7 @@ const styles: Record<string, React.CSSProperties> = {
   runButtonDisabled: {
     opacity: 0.4,
     cursor: "not-allowed",
+    boxShadow: "none",
   },
   metaRow: {
     display: "flex",
@@ -127,11 +129,19 @@ const styles: Record<string, React.CSSProperties> = {
     margin: 0,
     padding: 0,
     display: "flex",
-    gap: "0.5rem",
+    gap: "0.45rem",
     listStyle: "none",
     flexWrap: "wrap",
     fontFamily: theme.typography.mono,
     fontSize: theme.typography.sizeSM,
+  },
+  keystreamItem: {
+    backgroundColor: theme.colors.controlBg,
+    border: `1px solid ${theme.colors.controlBorderMuted}`,
+    borderRadius: "0.5rem",
+    padding: "0.25rem 0.5rem",
+    color: theme.colors.textAccent,
+    boxShadow: "inset 0 0 0 1px rgba(2, 8, 23, 0.4)",
   },
 };
 
@@ -333,11 +343,11 @@ export const CipherEngine: React.FC<CipherEngineProps> = ({
       ) : null}
       {pendingDeck ? (
         <div style={styles.info}>
-          Your original deck stays untouched until you apply the advanced deck. This mirrors using the same key
-          twice—only commit the new order when you&apos;re ready to continue the sequence.
+          Your original deck stays untouched until you apply the advanced deck. This mirrors using the same key twice—only
+          commit the new order when you&apos;re ready to continue the sequence.
         </div>
       ) : null}
-      <label style={{ fontSize: "0.85rem", color: "#cbd5f5" }} htmlFor="cipher-output">
+      <label style={styles.fieldLabel} htmlFor="cipher-output">
         {mode === "encrypt" ? "Cipher text" : "Recovered plaintext"}
       </label>
       <textarea
@@ -353,12 +363,12 @@ export const CipherEngine: React.FC<CipherEngineProps> = ({
       />
       {keystreamPreview.length > 0 ? (
         <div>
-          <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "0.35rem" }}>
-            First {keystreamPreview.length} keystream values:
-          </div>
+          <div style={styles.keystreamLabel}>First {keystreamPreview.length} keystream values:</div>
           <ul style={styles.keystreamList}>
             {keystreamPreview.map((value, index) => (
-              <li key={`${value}-${index}`}>{value}</li>
+              <li key={`${value}-${index}`} style={styles.keystreamItem}>
+                {value}
+              </li>
             ))}
           </ul>
         </div>

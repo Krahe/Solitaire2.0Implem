@@ -11,3 +11,29 @@
 - Next feature: add "reuse risk" warning when encrypting a new message without applying the advanced deck. This is both crypto safety and in-universe ethics.
 - Tone check: UI voice is now canonically “handler / ritual,” aligned with Trial 5’s non-coercive sovereignty theme.
 
+
+## ENTRY #2: 2025-10-30 
+** Coordination Protocol (2025-10-30 late session)
+- We now have three AI collaborators and me (Krahe):
+  - Claude Code: GUI, theme, QuantumBackground visuals, layout and presentation.
+  - Codex: core logic, deck plumbing, reversible deck code, clipboard handlers, warnings.
+  - GPT-5 Thinking: architecture, covenant enforcement, PR review, test scaffolding.
+
+- Claude Code is limited to visual/structural React work and theme tokens.
+  Claude does NOT touch cipher math, plaintext normalization, or consent / warning logic.
+
+- Codex is responsible for:
+  - deckFingerprint, deckToCode, codeToDeck in src/logic/deckCode.ts
+  - Apply Advanced Deck wiring
+  - clipboard copy handlers
+  - keystream reuse warning logic
+  - writing Vitest for those behaviors.
+
+- GPT-5 Thinking will review PRs through the GitHub connector and block merges that violate AGENTS.md.
+  Test files will be required before merge.
+
+- CipherEngine ritual log UI now exists in shell form and will soon display:
+  ciphertext output, keystream preview, full advanced deck vector, fingerprint, and deck code.
+  This is mandatory: the tool must tell the truth about state.
+
+This division prevents “too many cooks” and keeps covenant / lore intact while we add art and usability.

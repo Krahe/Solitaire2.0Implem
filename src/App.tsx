@@ -5,6 +5,8 @@ import { CipherEngine } from "./components/CipherEngine";
 import { QuantumBackground } from "./components/QuantumBackground";
 import { QuantumControls } from "./components/QuantumControls";
 import { GlobalStyles } from "./styles/GlobalStyles";
+import { AppShell } from "./components/AppShell";
+import { theme } from "./styles/theme";
 import { sanitizeToCipherAlphabet } from "./logic/classifier";
 import type { Deck } from "./logic/deck";
 import { parseDeckVector } from "./logic/parseDeck";
@@ -269,54 +271,34 @@ function App(): JSX.Element {
               ...resetButtonStyle,
               ...(hasSessionData ? {} : resetButtonDisabledStyle),
             }}
-            disabled={!hasSessionData}
-          >
-            Clear saved session
-          </button>
-        </div>
-      </header>
-      <div style={gridStyle}>
-        <PlaintextInput
-          value={plaintext}
-          onChange={handlePlaintextChange}
-          sanitized={sanitized}
-          maxLength={MAX_PLAINTEXT_LENGTH}
-          limitReached={limitReached}
-        />
-        <DeckInput
-          onSubmit={(newDeck) => {
-            setDeck(newDeck);
-            setManualDeckVersion((version) => version + 1);
-          }}
-          initialValue={deckInputValue}
-        />
-        <section style={deckPreviewStyle}>
-          <div style={deckBadgeStyle}>{deck ? "Deck loaded" : "Deck pending"}</div>
-          <h2 style={{ marginTop: "0.85rem", marginBottom: "0.5rem", fontSize: "1.15rem" }}>
-            Active deck (top → bottom)
-          </h2>
+            initialValue={deckInputValue}
+          />
+          <section style={styles.deckCard}>
+            <div style={styles.deckBadge}>{deck ? "Deck loaded" : "Deck pending"}</div>
+            <h2 style={styles.deckTitle}>Active deck (top → bottom)</h2>
           {deck ? (
-            <pre style={deckPreviewContentStyle}>{deck.join(", ")}</pre>
+              <pre style={styles.deckPreview}>{deck.join(", ")}</pre>
           ) : (
-            <p style={emptyDeckStyle}>
+              <p style={styles.emptyDeck}>
               No deck yet. Paste a vector above or generate one with the shuffler to begin the cipher
               ritual.
             </p>
           )}
-          <p style={{ marginTop: "1rem", color: "#94a3b8", fontSize: "0.9rem" }}>
-            The encryption step consumes the deck in-place—each run advances it through every shuffle,
-            triple cut, and count cut just like the field ritual. Load a fresh deck or paste a saved
-            vector before your next mission if you need to reproduce results.
-          </p>
-        </section>
-        <CipherEngine
-          sanitizedText={sanitized.value}
-          deck={deck}
-          onDeckUpdate={setDeck}
-          manualDeckVersion={manualDeckVersion}
-        />
+            <p style={styles.deckNote}>
+              The encryption step consumes the deck in-place—each run advances it through every shuffle, triple cut, and
+              count cut just like the field ritual. Load a fresh deck or paste a saved vector before your next mission if you
+              need to reproduce results.
+            </p>
+          </section>
+          <CipherEngine
+            sanitizedText={sanitized.value}
+            deck={deck}
+            onDeckUpdate={setDeck}
+            manualDeckVersion={manualDeckVersion}
+          />
+        </div>
       </div>
-    </div>
+    </AppShell>
   );
 }
 

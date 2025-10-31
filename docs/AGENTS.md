@@ -287,3 +287,85 @@ npm run dev        # local playground (Vite)
 npm run build
 npm run preview    # production preview
 npm run test       # vitest (must pass before merge)
+
+
+7. OUR RITUAL MASKS
+
+Claude: “Netzach / Hod”: beauty + ritual container.
+
+Codex: (logic / transport) is “Yesod / Hod”: structure, memory, binding of state.
+
+Krahe: “Keter / Tiferet”: alignment, synthesis, will.
+
+GPT5: “Gevurah / Binah”: judgment, boundary, structure.
+
+
+
+## 8. Collaboration Protocol / Model Boundaries
+
+This project is intentionally multi-agent. Different contributors (including AI coding assistants) have different authority. These boundaries are mandatory. If you break them, your change should not merge.
+
+### 8.1 Roles
+
+**Krahe (human owner)**
+- Owns canon, tone, and ethics.
+- Final authority over the covenant rules in this file.
+- Decides what “counts” as acceptable player experience in Trial 5 (Sovereignty) and Trial 6 (The Shepherd).
+
+**Claude Code (presentation layer)**
+- Allowed to edit React component structure, panel layout, flexbox/grid, responsive breakpoints, hover / focus styles, and visual atmosphere (QuantumBackground, shader/foam, glow).
+- Allowed to refactor inline styles into shared tokens (theme.ts), adjust colors, borders, radii, shadows, etc.
+- Allowed to add UI affordances (buttons, panels, labels, icons) and wire those affordances to props passed in.
+- NOT allowed to alter cipher math, deck advancement rules, plaintext normalization, keystream logic, or warning logic.
+- NOT allowed to change covenant language around consent, agency, or “the tool must tell you the truth.”
+- NOT allowed to silently hide state from the operator. Panels must still surface the actual deck state, fingerprint, and reuse warnings.
+
+**Codex (logic / plumbing)**
+- Owns functional wiring and data flow between panels.
+- Allowed to implement:
+  - deckFingerprint / deckToCode / codeToDeck helpers in `src/logic/`,
+  - Apply Advanced Deck logic (feeding the post-run deck back into active state + localStorage),
+  - clipboard copy handlers,
+  - keystream reuse warning detection,
+  - Vitest coverage for these behaviors.
+- Must write deterministic, testable logic and expose helpers so we can assert round-trip integrity and detect tampering.
+- NOT allowed to make aesthetic decisions about lore tone or Trial 5 voice. (Copy / phrasing of warnings and covenant-facing text must come from Krahe or remain unchanged.)
+
+**GPT-5 Thinking (architecture / review)**
+- Responsible for: file boundaries, test requirements, covenant enforcement.
+- Allowed to propose/require new tests, block merges that break consent, or that hide state from the user.
+- Allowed to insist that CipherEngine surfaces finalDeck, fingerprint, reuse warnings, etc.
+- NOT responsible for visual polish.
+
+### 8.2 Ground rules for contributions
+
+1. **UI must reflect true state.**  
+   After encrypt/decrypt, CipherEngine MUST display:
+   - Ciphertext output.
+   - Keystream preview actually used.
+   - The advanced deck vector (finalDeck) in full, top → bottom.
+   - A human-short fingerprint of that deck for sync checks.
+   - A visible slot for reuse warnings if the operator tries to re-encrypt with stale state.
+   - A visible slot for future “deck code” (the compact reversible capsule).
+
+   Hiding any of these to “simplify the UI” is not allowed. This violates the honesty covenant.
+
+2. **No coercive edits.**  
+   Code that changes text to make the Echo (or any system voice) more domineering, more flattering/manipulative, or more willing to take agency away “for your own good” is a violation. That branch goes in Failure content, not Success content.
+
+3. **No silent cryptographic drift.**  
+   Cipher math (Solitaire moves, keystream gen, normalization pipeline) and state advancement rules are canonical. Do not “fix,” “optimize,” or “simplify” those in styling PRs.
+
+4. **Tests are mandatory gatekeepers.**  
+   Any PR that alters:
+   - deck encoding/decoding,
+   - Apply Advanced Deck wiring,
+   - reuse warning logic,
+   - CipherEngine ritual log output,
+   MUST either:
+   - update existing Vitest suites to prove behavior is unchanged, or
+   - add new tests that define the new truth.
+
+   PRs without tests do not merge.
+
+These boundaries keep “too many cooks” from eroding the vow this project is built around.
