@@ -68,6 +68,47 @@ export const GlobalStyles: React.FC = () => {
       [data-quantum-controls="true"] {
         animation: quantumPulse 4s ease-in-out infinite;
       }
+
+      /* Responsive grid layout */
+      .app-grid {
+        grid-template-columns: 1fr; /* Mobile: single column */
+      }
+
+      @media (min-width: 1100px) {
+        .app-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr)); /* Desktop: 3 columns */
+        }
+
+        /* Column assignments on desktop */
+        .grid-header {
+          grid-column: 1 / -1; /* Header spans all columns */
+        }
+
+        .grid-plaintext {
+          grid-column: 1;
+          grid-row: 2;
+        }
+
+        .grid-cipher {
+          grid-column: 1;
+          grid-row: 3;
+        }
+
+        .grid-deck-input {
+          grid-column: 2;
+          grid-row: 2 / span 2; /* Deck input spans 2 rows */
+        }
+
+        .grid-deck-preview {
+          grid-column: 3;
+          grid-row: 2;
+        }
+
+        .grid-quantum {
+          grid-column: 3;
+          grid-row: 3;
+        }
+      }
     `;
 
     document.head.appendChild(styleEl);

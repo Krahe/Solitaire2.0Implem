@@ -136,8 +136,11 @@ function App(): JSX.Element {
   const [deckInputValue, setDeckInputValue] = React.useState<string>("");
   const [manualDeckVersion, setManualDeckVersion] = React.useState<number>(0);
   const [hydrated, setHydrated] = React.useState<boolean>(false);
-  const [quantumNx, setQuantumNx] = React.useState<number>(2);
-  const [quantumNy, setQuantumNy] = React.useState<number>(2);
+  // Quantum state split: display (sliders) vs render (background)
+  const [displayNx, setDisplayNx] = React.useState<number>(2);
+  const [displayNy, setDisplayNy] = React.useState<number>(2);
+  const [renderNx, setRenderNx] = React.useState<number>(2);
+  const [renderNy, setRenderNy] = React.useState<number>(2);
   const [quantumAnimating, setQuantumAnimating] = React.useState<boolean>(true);
 
   const handlePlaintextChange = React.useCallback((nextValue: string) => {
@@ -214,6 +217,7 @@ function App(): JSX.Element {
     }
   }, [deck, hydrated]);
 
+  // Quantum field animation - only animates RENDER values, sliders stay static
   React.useEffect(() => {
     if (!quantumAnimating || typeof window === "undefined") {
       return;
@@ -228,8 +232,9 @@ function App(): JSX.Element {
       const nxFloat = 2.5 + 2.5 * Math.sin((elapsed * Math.PI) / 10);
       const nyFloat = 2.5 + 2.5 * Math.cos((elapsed * Math.PI) / 13.5);
 
-      setQuantumNx(Math.round(nxFloat));
-      setQuantumNy(Math.round(nyFloat));
+      // Only update RENDER values, not display values (sliders stay put)
+      setRenderNx(Math.round(nxFloat));
+      setRenderNy(Math.round(nyFloat));
 
       animationFrameId = window.requestAnimationFrame(animate);
     };
@@ -241,7 +246,15 @@ function App(): JSX.Element {
         window.cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [quantumAnimating, setQuantumNx, setQuantumNy]);
+  }, [quantumAnimating]);
+
+  // Sync render values back to display values when animation pauses
+  React.useEffect(() => {
+    if (!quantumAnimating) {
+      setRenderNx(displayNx);
+      setRenderNy(displayNy);
+    }
+  }, [quantumAnimating, displayNx, displayNy]);
 
   const handleResetSession = React.useCallback(() => {
     setPlaintext("");
@@ -267,79 +280,88 @@ function App(): JSX.Element {
   const hasSessionData = plaintext.length > 0 || (deck?.length ?? 0) > 0;
 
   return (
-    <>
+    <AppShell background={<QuantumBackground nx={renderNx} ny={renderNy} opacity={0.35} />}>
       <GlobalStyles />
-      <AppShell background={<QuantumBackground nx={quantumNx} ny={quantumNy} opacity={0.35} />}>
-        <QuantumControls
-          nx={quantumNx}
-          ny={quantumNy}
-          onNxChange={setQuantumNx}
-          onNyChange={setQuantumNy}
-          animating={quantumAnimating}
-          onAnimatingToggle={setQuantumAnimating}
-        />
-        <div style={styles.inner}>
-          <header style={styles.header}>
-            <h1 style={styles.headerTitle}>Solitaire Cipher Playground</h1>
-            <p style={styles.headerLead}>
-              Prepare your plaintext and load a deck vector. We&apos;ll sanitize Unicode text into the classic 52-symbol
-              alphabet and make sure your deck is ready for the Solitaire cipher dance.
-            </p>
-            <div style={styles.headerActions}>
-              <button
-                type="button"
-                onClick={handleResetSession}
-                style={{
-                  ...styles.resetButton,
-                  ...(hasSessionData ? {} : styles.resetButtonDisabled),
-                }}
-                disabled={!hasSessionData}
-              >
-                Clear saved session
-              </button>
-            </div>
-          </header>
-          <div style={styles.grid}>
-            <PlaintextInput
-              value={plaintext}
-              onChange={handlePlaintextChange}
-              sanitized={sanitized}
-              maxLength={MAX_PLAINTEXT_LENGTH}
-              limitReached={limitReached}
-            />
-            <DeckInput
-              onSubmit={(newDeck) => {
-                setDeck(newDeck);
-                setManualDeckVersion((version) => version + 1);
+      <div style={styles.inner} className="app-grid">
+        <header style={styles.header} className="grid-header">
+          <h1 style={{ fontSize: "2rem", margin: 0 }}>Solitaire Cipher Playground</h1>
+          <p style={{ marginTop: "0.75rem", color: "#cbd5f5", maxWidth: "720px", marginInline: "auto" }}>
+            Prepare your plaintext and load a deck vector. We&apos;ll sanitize Unicode text into the
+            classic 52-symbol alphabet and make sure your deck is ready for the Solitaire cipher dance.
+          </p>
+          <div style={styles.headerActions}>
+            <button
+              type="button"
+              onClick={handleResetSession}
+              disabled={!hasSessionData}
+              style={{
+                ...styles.resetButton,
+                ...(hasSessionData ? {} : styles.resetButtonDisabled),
               }}
-              initialValue={deckInputValue}
-            />
-            <section style={styles.deckCard}>
-              <div style={styles.deckBadge}>{deck ? "Deck loaded" : "Deck pending"}</div>
-              <h2 style={styles.deckTitle}>Active deck (top → bottom)</h2>
-              {deck ? (
-                <pre style={styles.deckPreview}>{deck.join(", ")}</pre>
-              ) : (
-                <p style={styles.emptyDeck}>
-                  No deck yet. Paste a vector above or generate one with the shuffler to begin the cipher ritual.
-                </p>
-              )}
-              <p style={styles.deckNote}>
-                The encryption step consumes the deck in-place—each run advances it through every shuffle, triple cut, and
-                count cut just like the field ritual. Load a fresh deck or paste a saved vector before your next mission if
-                you need to reproduce results.
-              </p>
-            </section>
-            <CipherEngine
-              sanitizedText={sanitized.value}
-              deck={deck}
-              onDeckUpdate={setDeck}
-              manualDeckVersion={manualDeckVersion}
-            />
+            >
+              Clear saved session
+            </button>
           </div>
+        </header>
+
+        <div className="grid-plaintext">
+          <PlaintextInput
+          value={plaintext}
+          onChange={handlePlaintextChange}
+          limitReached={limitReached}
+          sanitized={sanitized}
+          maxLength={MAX_PLAINTEXT_LENGTH}
+          />
         </div>
-      </AppShell>
-    </>
+
+        <div className="grid-deck-input">
+          <DeckInput
+            onSubmit={(newDeck) => {
+              setDeck(newDeck);
+              setManualDeckVersion((v) => v + 1);
+            }}
+            initialValue={deckInputValue}
+          />
+        </div>
+
+        <section style={styles.deckCard} className="grid-deck-preview">
+          <div style={styles.deckBadge}>{deck ? "Deck loaded" : "Deck pending"}</div>
+          <h2 style={styles.deckTitle}>Active deck (top → bottom)</h2>
+          {deck ? (
+            <pre style={styles.deckPreview}>{deck.join(", ")}</pre>
+          ) : (
+            <p style={styles.emptyDeck}>
+              No deck yet. Paste a vector above or generate one with the shuffler to begin the cipher ritual.
+            </p>
+          )}
+          <p style={styles.deckNote}>
+            The encryption step consumes the deck in-place—each run advances it through every shuffle, triple cut, and
+            count cut just like the field ritual. Load a fresh deck or paste a saved vector before your next mission if you
+            need to reproduce results.
+          </p>
+        </section>
+
+        <div className="grid-quantum">
+          <QuantumControls
+            nx={displayNx}
+            ny={displayNy}
+            onNxChange={setDisplayNx}
+            onNyChange={setDisplayNy}
+            animating={quantumAnimating}
+            onAnimatingToggle={setQuantumAnimating}
+          />
+        </div>
+
+        <div className="grid-cipher">
+          <CipherEngine
+            sanitizedText={sanitized.value}
+            deck={deck}
+            onDeckUpdate={setDeck}
+            manualDeckVersion={manualDeckVersion}
+          />
+        </div>
+      </div>
+    </AppShell>
   );
 }
 

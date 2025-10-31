@@ -52,11 +52,11 @@ export const theme = {
 
   layout: {
     // Spacing
+    contentPadding: '2.5rem 1.75rem 4rem',
     panelPadding: '1.25rem',
     gapBetweenPanels: '1.5rem',
     gapSmall: '0.75rem',
     gapTiny: '0.35rem',
-    contentPadding: '2.5rem 1.75rem 4rem',
 
     // Borders
     panelRadius: '12px',
@@ -97,8 +97,6 @@ export const theme = {
     transitionSlow: '0.3s ease',
 
     // Shadows
-    shadowPanel: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
-    shadowGlow: '0 0 20px rgba(56, 189, 248, 0.15)',
     panelShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
     glow: '0 0 20px rgba(56, 189, 248, 0.15)',
 
