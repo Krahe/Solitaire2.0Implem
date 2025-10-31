@@ -24,6 +24,17 @@ export const theme = {
     warning: '#f97316',       // orange-500
     error: '#f87171',         // red-400
 
+    // Badges & accents
+    badgeBg: '#0ea5e9',
+    badgeText: '#04111f',
+    textAccent: '#38bdf8',
+
+    // Controls
+    controlBg: 'rgba(8, 14, 29, 0.9)',
+    controlBorderMuted: '#1e293b',
+    actionDangerBg: '#f87171',
+    actionDangerText: '#020617',
+
     // Interactive
     buttonPrimary: '#22c55e',
     buttonPrimaryText: '#04111f',
@@ -51,6 +62,7 @@ export const theme = {
     gapBetweenPanels: '1.5rem',
     gapSmall: '0.75rem',
     gapTiny: '0.35rem',
+    contentPadding: '2.5rem 1.75rem 4rem',
 
     // Borders
     panelRadius: '12px',
@@ -93,6 +105,8 @@ export const theme = {
     // Shadows
     shadowPanel: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
     shadowGlow: '0 0 20px rgba(56, 189, 248, 0.15)',
+    panelShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
+    glow: '0 0 20px rgba(56, 189, 248, 0.15)',
 
     // Focus
     focusRing: '0 0 0 3px rgba(56, 189, 248, 0.4)',
