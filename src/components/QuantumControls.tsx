@@ -12,16 +12,12 @@ export interface QuantumControlsProps {
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    position: "fixed",
-    bottom: theme.layout.gapBetweenPanels,
-    right: theme.layout.gapBetweenPanels,
     backgroundColor: theme.colors.panelBg,
     border: `1px solid ${theme.colors.panelBorder}`,
     borderRadius: theme.layout.panelRadius,
     padding: "1rem",
     color: theme.colors.textPrimary,
-    zIndex: 100,
-    minWidth: theme.layout.panelMinWidth,
+    minHeight: "220px",
     backdropFilter: theme.effects.backdropBlur,
   },
   title: {
