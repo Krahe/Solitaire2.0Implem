@@ -7,28 +7,30 @@ import { QuantumControls } from "./components/QuantumControls";
 import { sanitizeToCipherAlphabet } from "./logic/classifier";
 import type { Deck } from "./logic/deck";
 import { parseDeckVector } from "./logic/parseDeck";
+import { theme } from "./styles/theme";
 
 const containerStyle: React.CSSProperties = {
   position: "relative",
   minHeight: "100vh",
   padding: "2rem 1.5rem 4rem",
-  // Background now rendered by QuantumBackground component
-  isolation: "isolate", // Create stacking context
+  isolation: "isolate",
 };
 
 const gridStyle: React.CSSProperties = {
   position: "relative",
   zIndex: 1,
   display: "grid",
-  gap: "1.5rem",
-  maxWidth: "1080px",
+  gap: theme.layout.gapBetweenPanels,
+  maxWidth: "1400px", // Wider for widescreen
   margin: "0 auto",
+  gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))", // Widescreen 2-col
 };
 
 const headerStyle: React.CSSProperties = {
-  color: "#e2e8f0",
+  color: theme.colors.textPrimary,
   textAlign: "center",
   marginBottom: "2rem",
+  gridColumn: "1 / -1", // Span full width on grid
 };
 
 const headerActionsStyle: React.CSSProperties = {
@@ -38,49 +40,49 @@ const headerActionsStyle: React.CSSProperties = {
 };
 
 const deckPreviewStyle: React.CSSProperties = {
-  backgroundColor: "#0f172a",
-  border: "1px solid #1e293b",
-  borderRadius: "12px",
-  padding: "1.25rem",
-  color: "#e2e8f0",
+  backgroundColor: theme.colors.panelBgSecondary,
+  border: `1px solid ${theme.colors.panelBorder}`,
+  borderRadius: theme.layout.panelRadius,
+  padding: theme.layout.panelPadding,
+  color: theme.colors.textPrimary,
 };
 
 const deckBadgeStyle: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
-  gap: "0.35rem",
+  gap: theme.layout.gapTiny,
   padding: "0.35rem 0.6rem",
-  borderRadius: "999px",
-  backgroundColor: "#1d4ed8",
-  color: "#f8fafc",
-  fontSize: "0.8rem",
-  fontWeight: 600,
+  borderRadius: theme.layout.badgeRadius,
+  backgroundColor: theme.colors.accentBright,
+  color: theme.colors.textPrimary,
+  fontSize: theme.typography.sizeXS,
+  fontWeight: theme.typography.weightSemibold,
 };
 
 const deckPreviewContentStyle: React.CSSProperties = {
-  marginTop: "0.75rem",
+  marginTop: theme.layout.gapSmall,
   whiteSpace: "pre-wrap",
   wordBreak: "break-word",
-  fontFamily: "Fira Code, Source Code Pro, Menlo, Consolas, monospace",
-  fontSize: "0.9rem",
+  fontFamily: theme.typography.mono,
+  fontSize: theme.typography.sizeMD,
   lineHeight: 1.6,
 };
 
 const emptyDeckStyle: React.CSSProperties = {
-  color: "#94a3b8",
+  color: theme.colors.textMuted,
   fontStyle: "italic",
 };
 
 const resetButtonStyle: React.CSSProperties = {
-  backgroundColor: "#ef4444",
-  color: "#0b1120",
+  backgroundColor: theme.colors.error,
+  color: theme.colors.panelBg,
   border: "none",
-  borderRadius: "999px",
+  borderRadius: theme.layout.badgeRadius,
   padding: "0.6rem 1.1rem",
-  fontWeight: 600,
+  fontWeight: theme.typography.weightSemibold,
   cursor: "pointer",
-  fontSize: "0.95rem",
-  transition: "background-color 0.2s ease, transform 0.2s ease",
+  fontSize: theme.typography.sizeMD,
+  transition: theme.effects.transitionNormal,
 };
 
 const resetButtonDisabledStyle: React.CSSProperties = {
