@@ -1,6 +1,7 @@
 import React from "react";
 import { createOrderedDeck, shuffleDeck, type Deck } from "../logic/deck";
 import { parseDeckVector, type ParseResult } from "../logic/parseDeck";
+import { theme } from "../styles/theme";
 
 export interface DeckInputProps {
   onSubmit(deck: Deck): void;
@@ -110,11 +111,13 @@ export const DeckInput: React.FC<DeckInputProps> = ({ onSubmit, initialValue = "
 
 const styles: Record<string, React.CSSProperties> = {
   card: {
-    backgroundColor: "#111827",
-    border: "1px solid #1f2937",
-    borderRadius: "12px",
-    padding: "1.25rem",
-    color: "#f8fafc",
+    backgroundColor: theme.colors.panelBg,
+    border: `1px solid ${theme.colors.panelBorder}`,
+    borderRadius: theme.layout.panelRadius,
+    padding: theme.layout.panelPadding,
+    color: theme.colors.textPrimary,
+    boxShadow: theme.effects.panelShadow,
+    backdropFilter: "blur(18px)",
   },
   title: {
     marginTop: 0,
@@ -125,7 +128,8 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: 0,
     marginBottom: "0.75rem",
     fontSize: "0.95rem",
-    color: "#cbd5f5",
+    color: theme.colors.textSecondary,
+    lineHeight: 1.6,
   },
   form: {
     display: "flex",
@@ -134,42 +138,47 @@ const styles: Record<string, React.CSSProperties> = {
   },
   label: {
     fontSize: "0.85rem",
-    color: "#cbd5f5",
+    color: theme.colors.textSecondary,
+    letterSpacing: "0.01em",
   },
   textarea: {
     width: "100%",
-    backgroundColor: "#020617",
-    color: "#f8fafc",
-    border: "1px solid #334155",
-    borderRadius: "0.65rem",
+    backgroundColor: theme.colors.controlBg,
+    color: theme.colors.textPrimary,
+    border: `1px solid ${theme.colors.controlBorder}`,
+    borderRadius: "0.75rem",
     padding: "0.75rem",
     resize: "vertical",
     fontSize: "0.95rem",
     lineHeight: 1.5,
+    fontFamily: theme.typography.mono,
   },
   successMessage: {
     fontSize: "0.85rem",
-    color: "#34d399",
+    color: theme.colors.textSuccess,
     minHeight: "1.2rem",
   },
   errorMessage: {
     fontSize: "0.85rem",
-    color: "#f87171",
+    color: theme.colors.textError,
     minHeight: "1.2rem",
   },
   button: {
-    backgroundColor: "#2563eb",
-    color: "#f8fafc",
-    border: "none",
-    borderRadius: "0.65rem",
-    padding: "0.6rem 0.9rem",
+    backgroundColor: theme.colors.actionPrimaryBg,
+    color: theme.colors.actionPrimaryText,
+    border: `1px solid ${theme.colors.actionPrimaryBorder}`,
+    borderRadius: "0.75rem",
+    padding: "0.6rem 1rem",
     fontWeight: 600,
     cursor: "pointer",
     fontSize: "0.95rem",
+    letterSpacing: "0.01em",
+    boxShadow: theme.effects.glow,
   },
   buttonDisabled: {
     opacity: 0.4,
     cursor: "not-allowed",
+    boxShadow: "none",
   },
   helperRow: {
     display: "flex",
@@ -177,11 +186,11 @@ const styles: Record<string, React.CSSProperties> = {
     gap: "0.5rem",
   },
   secondaryButton: {
-    backgroundColor: "#1f2937",
-    color: "#e2e8f0",
-    border: "1px solid #334155",
-    borderRadius: "0.65rem",
-    padding: "0.5rem 0.75rem",
+    backgroundColor: theme.colors.actionSecondaryBg,
+    color: theme.colors.actionSecondaryText,
+    border: `1px solid ${theme.colors.actionSecondaryBorder}`,
+    borderRadius: "0.75rem",
+    padding: "0.5rem 0.85rem",
     fontWeight: 600,
     cursor: "pointer",
     fontSize: "0.9rem",
@@ -190,7 +199,7 @@ const styles: Record<string, React.CSSProperties> = {
   helperText: {
     margin: 0,
     fontSize: "0.8rem",
-    color: "#94a3b8",
+    color: theme.colors.textMuted,
     lineHeight: 1.5,
   },
 };

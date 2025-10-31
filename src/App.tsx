@@ -4,88 +4,120 @@ import { PlaintextInput } from "./components/PlaintextInput";
 import { CipherEngine } from "./components/CipherEngine";
 import { QuantumBackground } from "./components/QuantumBackground";
 import { QuantumControls } from "./components/QuantumControls";
+import { AppShell } from "./components/AppShell";
+import { theme } from "./styles/theme";
 import { sanitizeToCipherAlphabet } from "./logic/classifier";
 import type { Deck } from "./logic/deck";
 import { parseDeckVector } from "./logic/parseDeck";
 
-const containerStyle: React.CSSProperties = {
-  position: "relative",
-  minHeight: "100vh",
-  padding: "2rem 1.5rem 4rem",
-  // Background now rendered by QuantumBackground component
-  isolation: "isolate", // Create stacking context
-};
-
-const gridStyle: React.CSSProperties = {
-  position: "relative",
-  zIndex: 1,
-  display: "grid",
-  gap: "1.5rem",
-  maxWidth: "1080px",
-  margin: "0 auto",
-};
-
-const headerStyle: React.CSSProperties = {
-  color: "#e2e8f0",
-  textAlign: "center",
-  marginBottom: "2rem",
-};
-
-const headerActionsStyle: React.CSSProperties = {
-  marginTop: "1.5rem",
-  display: "flex",
-  justifyContent: "center",
-};
-
-const deckPreviewStyle: React.CSSProperties = {
-  backgroundColor: "#0f172a",
-  border: "1px solid #1e293b",
-  borderRadius: "12px",
-  padding: "1.25rem",
-  color: "#e2e8f0",
-};
-
-const deckBadgeStyle: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "0.35rem",
-  padding: "0.35rem 0.6rem",
-  borderRadius: "999px",
-  backgroundColor: "#1d4ed8",
-  color: "#f8fafc",
-  fontSize: "0.8rem",
-  fontWeight: 600,
-};
-
-const deckPreviewContentStyle: React.CSSProperties = {
-  marginTop: "0.75rem",
-  whiteSpace: "pre-wrap",
-  wordBreak: "break-word",
-  fontFamily: "Fira Code, Source Code Pro, Menlo, Consolas, monospace",
-  fontSize: "0.9rem",
-  lineHeight: 1.6,
-};
-
-const emptyDeckStyle: React.CSSProperties = {
-  color: "#94a3b8",
-  fontStyle: "italic",
-};
-
-const resetButtonStyle: React.CSSProperties = {
-  backgroundColor: "#ef4444",
-  color: "#0b1120",
-  border: "none",
-  borderRadius: "999px",
-  padding: "0.6rem 1.1rem",
-  fontWeight: 600,
-  cursor: "pointer",
-  fontSize: "0.95rem",
-  transition: "background-color 0.2s ease, transform 0.2s ease",
-};
-
-const resetButtonDisabledStyle: React.CSSProperties = {
-  opacity: 0.4,
-  cursor: "not-allowed",
+const styles: Record<string, React.CSSProperties> = {
+  inner: {
+    width: "100%",
+    maxWidth: theme.layout.maxContentWidth,
+    display: "flex",
+    flexDirection: "column",
+    gap: "2.5rem",
+    marginInline: "auto",
+  },
+  header: {
+    textAlign: "center",
+    color: theme.colors.textPrimary,
+    margin: 0,
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+  },
+  headerTitle: {
+    fontSize: "2rem",
+    margin: 0,
+    letterSpacing: "0.02em",
+    textShadow: theme.effects.glow,
+  },
+  headerLead: {
+    margin: 0,
+    color: theme.colors.textSecondary,
+    fontSize: "1rem",
+    lineHeight: 1.6,
+    maxWidth: "720px",
+    marginInline: "auto",
+  },
+  headerActions: {
+    display: "flex",
+    justifyContent: "center",
+  },
+  resetButton: {
+    backgroundColor: theme.colors.actionDangerBg,
+    color: theme.colors.actionDangerText,
+    border: "none",
+    borderRadius: "999px",
+    padding: "0.6rem 1.2rem",
+    fontWeight: 600,
+    cursor: "pointer",
+    fontSize: "0.95rem",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    boxShadow: "0 10px 24px rgba(239, 68, 68, 0.2)",
+  },
+  resetButtonDisabled: {
+    opacity: 0.4,
+    cursor: "not-allowed",
+    boxShadow: "none",
+  },
+  grid: {
+    display: "grid",
+    gap: theme.layout.gapBetweenPanels,
+    width: "100%",
+    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+  },
+  deckCard: {
+    backgroundColor: theme.colors.panelBg,
+    border: `1px solid ${theme.colors.panelBorder}`,
+    borderRadius: theme.layout.panelRadius,
+    padding: theme.layout.panelPadding,
+    color: theme.colors.textPrimary,
+    boxShadow: theme.effects.panelShadow,
+    backdropFilter: "blur(18px)",
+  },
+  deckBadge: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "0.35rem",
+    padding: "0.35rem 0.65rem",
+    borderRadius: "999px",
+    backgroundColor: theme.colors.badgeBg,
+    color: theme.colors.badgeText,
+    fontSize: "0.8rem",
+    fontWeight: 600,
+    letterSpacing: "0.01em",
+  },
+  deckTitle: {
+    marginTop: "0.9rem",
+    marginBottom: "0.6rem",
+    fontSize: "1.15rem",
+    color: theme.colors.textPrimary,
+  },
+  deckPreview: {
+    marginTop: "0.75rem",
+    whiteSpace: "pre-wrap",
+    wordBreak: "break-word",
+    fontFamily: theme.typography.mono,
+    fontSize: "0.9rem",
+    lineHeight: 1.6,
+    backgroundColor: theme.colors.controlBg,
+    border: `1px solid ${theme.colors.controlBorderMuted}`,
+    borderRadius: "0.75rem",
+    padding: "0.75rem",
+  },
+  emptyDeck: {
+    color: theme.colors.textMuted,
+    fontStyle: "italic",
+    margin: 0,
+  },
+  deckNote: {
+    marginTop: "1rem",
+    color: theme.colors.textMuted,
+    fontSize: "0.9rem",
+    lineHeight: 1.5,
+  },
 };
 
 const MAX_PLAINTEXT_LENGTH = 100_000;
@@ -204,76 +236,70 @@ function App(): JSX.Element {
   const hasSessionData = plaintext.length > 0 || (deck?.length ?? 0) > 0;
 
   return (
-    <div style={containerStyle}>
-      <QuantumBackground nx={quantumNx} ny={quantumNy} opacity={0.35} />
-      <QuantumControls
-        nx={quantumNx}
-        ny={quantumNy}
-        onNxChange={setQuantumNx}
-        onNyChange={setQuantumNy}
-      />
-      <header style={headerStyle}>
-        <h1 style={{ fontSize: "2rem", margin: 0 }}>Solitaire Cipher Playground</h1>
-        <p style={{ marginTop: "0.75rem", color: "#cbd5f5", maxWidth: "720px", marginInline: "auto" }}>
-          Prepare your plaintext and load a deck vector. We&apos;ll sanitize Unicode text into the
-          classic 52-symbol alphabet and make sure your deck is ready for the Solitaire cipher dance.
-        </p>
-        <div style={headerActionsStyle}>
-          <button
-            type="button"
-            onClick={handleResetSession}
-            style={{
-              ...resetButtonStyle,
-              ...(hasSessionData ? {} : resetButtonDisabledStyle),
+    <AppShell background={<QuantumBackground nx={quantumNx} ny={quantumNy} opacity={0.35} />}>
+      <QuantumControls nx={quantumNx} ny={quantumNy} onNxChange={setQuantumNx} onNyChange={setQuantumNy} />
+      <div style={styles.inner}>
+        <header style={styles.header}>
+          <h1 style={styles.headerTitle}>Solitaire Cipher Playground</h1>
+          <p style={styles.headerLead}>
+            Prepare your plaintext and load a deck vector. We&apos;ll sanitize Unicode text into the classic 52-symbol
+            alphabet and make sure your deck is ready for the Solitaire cipher dance.
+          </p>
+          <div style={styles.headerActions}>
+            <button
+              type="button"
+              onClick={handleResetSession}
+              style={{
+                ...styles.resetButton,
+                ...(hasSessionData ? {} : styles.resetButtonDisabled),
+              }}
+              disabled={!hasSessionData}
+            >
+              Clear saved session
+            </button>
+          </div>
+        </header>
+        <div style={styles.grid}>
+          <PlaintextInput
+            value={plaintext}
+            onChange={handlePlaintextChange}
+            sanitized={sanitized}
+            maxLength={MAX_PLAINTEXT_LENGTH}
+            limitReached={limitReached}
+          />
+          <DeckInput
+            onSubmit={(newDeck) => {
+              setDeck(newDeck);
+              setManualDeckVersion((version) => version + 1);
             }}
-            disabled={!hasSessionData}
-          >
-            Clear saved session
-          </button>
-        </div>
-      </header>
-      <div style={gridStyle}>
-        <PlaintextInput
-          value={plaintext}
-          onChange={handlePlaintextChange}
-          sanitized={sanitized}
-          maxLength={MAX_PLAINTEXT_LENGTH}
-          limitReached={limitReached}
-        />
-        <DeckInput
-          onSubmit={(newDeck) => {
-            setDeck(newDeck);
-            setManualDeckVersion((version) => version + 1);
-          }}
-          initialValue={deckInputValue}
-        />
-        <section style={deckPreviewStyle}>
-          <div style={deckBadgeStyle}>{deck ? "Deck loaded" : "Deck pending"}</div>
-          <h2 style={{ marginTop: "0.85rem", marginBottom: "0.5rem", fontSize: "1.15rem" }}>
-            Active deck (top → bottom)
-          </h2>
+            initialValue={deckInputValue}
+          />
+          <section style={styles.deckCard}>
+            <div style={styles.deckBadge}>{deck ? "Deck loaded" : "Deck pending"}</div>
+            <h2 style={styles.deckTitle}>Active deck (top → bottom)</h2>
           {deck ? (
-            <pre style={deckPreviewContentStyle}>{deck.join(", ")}</pre>
+              <pre style={styles.deckPreview}>{deck.join(", ")}</pre>
           ) : (
-            <p style={emptyDeckStyle}>
+              <p style={styles.emptyDeck}>
               No deck yet. Paste a vector above or generate one with the shuffler to begin the cipher
               ritual.
             </p>
           )}
-          <p style={{ marginTop: "1rem", color: "#94a3b8", fontSize: "0.9rem" }}>
-            The encryption step consumes the deck in-place—each run advances it through every shuffle,
-            triple cut, and count cut just like the field ritual. Load a fresh deck or paste a saved
-            vector before your next mission if you need to reproduce results.
-          </p>
-        </section>
-        <CipherEngine
-          sanitizedText={sanitized.value}
-          deck={deck}
-          onDeckUpdate={setDeck}
-          manualDeckVersion={manualDeckVersion}
-        />
+            <p style={styles.deckNote}>
+              The encryption step consumes the deck in-place—each run advances it through every shuffle, triple cut, and
+              count cut just like the field ritual. Load a fresh deck or paste a saved vector before your next mission if you
+              need to reproduce results.
+            </p>
+          </section>
+          <CipherEngine
+            sanitizedText={sanitized.value}
+            deck={deck}
+            onDeckUpdate={setDeck}
+            manualDeckVersion={manualDeckVersion}
+          />
+        </div>
       </div>
-    </div>
+    </AppShell>
   );
 }
 

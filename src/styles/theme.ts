@@ -1,0 +1,48 @@
+export const theme = {
+  colors: {
+    appBgSolid: "#03040A",
+    panelBg: "rgba(8, 14, 32, 0.82)",
+    panelBorder: "rgba(118, 196, 255, 0.3)",
+    panelShadow: "0 24px 48px rgba(2, 12, 32, 0.55)",
+    textPrimary: "#EAF6FF",
+    textSecondary: "rgba(214, 233, 255, 0.82)",
+    textMuted: "rgba(148, 163, 184, 0.85)",
+    textAccent: "#38BDF8",
+    textWarning: "#FBBF24",
+    textSuccess: "#34D399",
+    textError: "#F87171",
+    badgeBg: "rgba(45, 130, 225, 0.8)",
+    badgeText: "#F8FAFC",
+    controlBg: "rgba(3, 7, 18, 0.92)",
+    controlBorder: "rgba(104, 148, 206, 0.4)",
+    controlBorderMuted: "rgba(51, 65, 85, 0.65)",
+    controlFocus: "rgba(106, 240, 255, 0.55)",
+    actionPrimaryBg: "rgba(106, 240, 255, 0.18)",
+    actionPrimaryText: "#6AF0FF",
+    actionPrimaryBorder: "rgba(106, 240, 255, 0.45)",
+    actionSecondaryBg: "rgba(24, 36, 64, 0.85)",
+    actionSecondaryText: "#E2E8F0",
+    actionSecondaryBorder: "rgba(71, 104, 164, 0.55)",
+    actionDangerBg: "#EF4444",
+    actionDangerText: "#051320",
+    infoPanelBg: "rgba(12, 20, 40, 0.85)",
+    headerAccent: "rgba(106, 240, 255, 0.65)",
+  },
+  layout: {
+    contentPadding: "2.5rem 1.5rem 4rem",
+    gapBetweenPanels: "1.5rem",
+    panelPadding: "1.25rem",
+    panelRadius: "16px",
+    maxContentWidth: "1080px",
+  },
+  typography: {
+    ui: "system-ui, -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif",
+    mono: "'JetBrains Mono', 'Fira Code', 'Source Code Pro', Menlo, Consolas, monospace",
+  },
+  effects: {
+    panelShadow: "0 24px 48px rgba(3, 15, 35, 0.55)",
+    glow: "0 0 18px rgba(106, 240, 255, 0.6)",
+  },
+} as const;
+
+export type Theme = typeof theme;
