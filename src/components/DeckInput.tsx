@@ -148,7 +148,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: theme.typography.sizeMD,
     fontFamily: theme.typography.mono,
     lineHeight: 1.5,
-    fontFamily: theme.typography.mono,
   },
   successMessage: {
     fontSize: theme.typography.sizeSM,

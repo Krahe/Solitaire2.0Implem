@@ -62,7 +62,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: theme.typography.mono,
     lineHeight: 1.5,
     minHeight: "6rem",
-    fontFamily: theme.typography.mono,
   },
   buttonRow: {
     display: "flex",

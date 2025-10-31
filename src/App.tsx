@@ -6,7 +6,6 @@ import { QuantumBackground } from "./components/QuantumBackground";
 import { QuantumControls } from "./components/QuantumControls";
 import { GlobalStyles } from "./styles/GlobalStyles";
 import { AppShell } from "./components/AppShell";
-import { theme } from "./styles/theme";
 import { sanitizeToCipherAlphabet } from "./logic/classifier";
 import type { Deck } from "./logic/deck";
 import { parseDeckVector } from "./logic/parseDeck";
@@ -246,9 +245,8 @@ function App(): JSX.Element {
   const hasSessionData = plaintext.length > 0 || (deck?.length ?? 0) > 0;
 
   return (
-    <div style={containerStyle}>
+    <AppShell background={<QuantumBackground nx={quantumNx} ny={quantumNy} opacity={0.35} />}>
       <GlobalStyles />
-      <QuantumBackground nx={quantumNx} ny={quantumNy} opacity={0.35} />
       <QuantumControls
         nx={quantumNx}
         ny={quantumNy}
@@ -257,46 +255,69 @@ function App(): JSX.Element {
         animating={quantumAnimating}
         onAnimatingToggle={setQuantumAnimating}
       />
-      <header style={headerStyle}>
-        <h1 style={{ fontSize: "2rem", margin: 0 }}>Solitaire Cipher Playground</h1>
-        <p style={{ marginTop: "0.75rem", color: "#cbd5f5", maxWidth: "720px", marginInline: "auto" }}>
-          Prepare your plaintext and load a deck vector. We&apos;ll sanitize Unicode text into the
-          classic 52-symbol alphabet and make sure your deck is ready for the Solitaire cipher dance.
-        </p>
-        <div style={headerActionsStyle}>
-          <button
-            type="button"
-            onClick={handleResetSession}
-            style={{
-              ...resetButtonStyle,
-              ...(hasSessionData ? {} : resetButtonDisabledStyle),
-            }}
-            initialValue={deckInputValue}
-          />
-          <section style={styles.deckCard}>
-            <div style={styles.deckBadge}>{deck ? "Deck loaded" : "Deck pending"}</div>
-            <h2 style={styles.deckTitle}>Active deck (top → bottom)</h2>
+      <div style={gridStyle}>
+        <header style={headerStyle}>
+          <h1 style={{ fontSize: "2rem", margin: 0 }}>Solitaire Cipher Playground</h1>
+          <p style={{ marginTop: "0.75rem", color: "#cbd5f5", maxWidth: "720px", marginInline: "auto" }}>
+            Prepare your plaintext and load a deck vector. We&apos;ll sanitize Unicode text into the
+            classic 52-symbol alphabet and make sure your deck is ready for the Solitaire cipher dance.
+          </p>
+          <div style={headerActionsStyle}>
+            <button
+              type="button"
+              onClick={handleResetSession}
+              disabled={!hasSessionData}
+              style={{
+                ...resetButtonStyle,
+                ...(hasSessionData ? {} : resetButtonDisabledStyle),
+              }}
+            >
+              Clear saved session
+            </button>
+          </div>
+        </header>
+
+        <PlaintextInput
+          value={plaintext}
+          onChange={handlePlaintextChange}
+          limitReached={limitReached}
+          sanitized={sanitized}
+          maxLength={MAX_PLAINTEXT_LENGTH}
+        />
+
+        <DeckInput
+          onSubmit={(newDeck) => {
+            setDeck(newDeck);
+            setManualDeckVersion((v) => v + 1);
+          }}
+          initialValue={deckInputValue}
+        />
+
+        <section style={deckPreviewStyle}>
+          <div style={deckBadgeStyle}>{deck ? "Deck loaded" : "Deck pending"}</div>
+          <h2 style={{ marginTop: theme.layout.gapSmall, marginBottom: theme.layout.gapSmall, fontSize: theme.typography.sizeLG }}>
+            Active deck (top → bottom)
+          </h2>
           {deck ? (
-              <pre style={styles.deckPreview}>{deck.join(", ")}</pre>
+            <pre style={deckPreviewContentStyle}>{deck.join(", ")}</pre>
           ) : (
-              <p style={styles.emptyDeck}>
-              No deck yet. Paste a vector above or generate one with the shuffler to begin the cipher
-              ritual.
+            <p style={emptyDeckStyle}>
+              No deck yet. Paste a vector above or generate one with the shuffler to begin the cipher ritual.
             </p>
           )}
-            <p style={styles.deckNote}>
-              The encryption step consumes the deck in-place—each run advances it through every shuffle, triple cut, and
-              count cut just like the field ritual. Load a fresh deck or paste a saved vector before your next mission if you
-              need to reproduce results.
-            </p>
-          </section>
-          <CipherEngine
-            sanitizedText={sanitized.value}
-            deck={deck}
-            onDeckUpdate={setDeck}
-            manualDeckVersion={manualDeckVersion}
-          />
-        </div>
+          <p style={{ marginTop: theme.layout.gapSmall, marginBottom: 0, color: theme.colors.textMuted, fontSize: theme.typography.sizeSM, lineHeight: 1.6 }}>
+            The encryption step consumes the deck in-place—each run advances it through every shuffle, triple cut, and
+            count cut just like the field ritual. Load a fresh deck or paste a saved vector before your next mission if you
+            need to reproduce results.
+          </p>
+        </section>
+
+        <CipherEngine
+          sanitizedText={sanitized.value}
+          deck={deck}
+          onDeckUpdate={setDeck}
+          manualDeckVersion={manualDeckVersion}
+        />
       </div>
     </AppShell>
   );

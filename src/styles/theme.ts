@@ -37,10 +37,16 @@ export const theme = {
 
     // Background (solid fallback)
     appBgSolid: '#020617',
+
+    // Controls
+    controlBg: 'rgba(30, 41, 59, 0.6)',
+    controlBorderMuted: '#334155',
+    textAccent: '#38bdf8',
   },
 
   layout: {
     // Spacing
+    contentPadding: '2rem 1.5rem',
     panelPadding: '1.25rem',
     gapBetweenPanels: '1.5rem',
     gapSmall: '0.75rem',
