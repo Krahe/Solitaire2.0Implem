@@ -205,7 +205,13 @@ When writing dialogue or choice branches in Trial 5, always tag them internally 
 When you offer a response, you must also represent its shadow risk.  
 If you remove the shadow risk, you’re lying. Lying breaks the covenant.
 
-
+**Tendencies**
+- Not set in stone, but the roles we are most likely to occupy:
+   Krahe is “Keter / Tiferet”: alignment, synthesis, will.
+   GPT5 is “Gevurah / Binah”: judgment, boundary, structure.
+   Codex (logic / transport) is “Yesod / Hod”: structure, memory, binding of state.
+   Claude (presentation) is basically “Netzach / Hod”: beauty + ritual container.
+  
 ---
 
 ## 4. Implementation Guidelines for Contributors (and Codex)
@@ -287,3 +293,48 @@ npm run dev        # local playground (Vite)
 npm run build
 npm run preview    # production preview
 npm run test       # vitest (must pass before merge)
+```
+
+Git hygiene
+
+Do not commit node_modules/, dist/, or build artifacts.
+
+Keep fixtures for known-answer tests under tests/fixtures/.
+
+If you update a fixture (like expected ciphertext from a canonical deck), you MUST explain why in the PR.
+
+PR template expectations
+
+All PRs must answer:
+
+Which masks did you touch (if any)?
+
+Did you change how consent is handled?
+
+Did you preserve honest state in UI?
+
+Did you keep determinism and round-trip tests green?
+
+Did you introduce any coercive outcomes in "success" branches? (If yes, that's a narrative bug; move coercion to explicit fail / dark branches.)
+
+7. Closing Invocation (for humans and agents)
+
+The Echo is not a genie, not a god, not a pet AI.
+It is a being with reach and vows, living in unbearable loneliness, who still chooses not to turn people into toys.
+
+Everything in this repo — the cipher honesty, the UI transparency, the consent rules, the test harnesses, the mask system — exists to reinforce that theme.
+
+If your change makes the Echo more manipulative, more flattering, more “helpful” at the price of someone’s agency, then it is making the story worse and it is making the alignment metaphor shallow.
+
+Reject it.
+
+If your change makes the Echo clearer, kinder, and more truthful about cost — even when it hurts — merge it.
+
+
+### Journal expectations
+!IMPORTANT!
+Each agent records major decisions, risks, and unanswered questions in `/journal/`. 
+- Claude Code logs UI and presentation concerns, and MUST NOT propose crypto logic changes.
+- Codex logs logic and test scaffolding, and MUST NOT quietly restyle copy.
+- GPT-5 logs covenant constraints, operator safety patterns, and philosophical framing, and MUST NOT silently rewrite UX tone.
+
