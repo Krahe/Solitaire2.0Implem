@@ -1,6 +1,7 @@
 import React from "react";
 import type { Deck } from "../logic/deck";
 import { decrypt, encrypt, type CipherWarning } from "../logic/solitaireCipher";
+import { theme } from "../styles/theme";
 
 export interface CipherEngineProps {
   sanitizedText: string;
@@ -11,14 +12,16 @@ export interface CipherEngineProps {
 
 const styles: Record<string, React.CSSProperties> = {
   card: {
-    backgroundColor: "#0b1120",
-    border: "1px solid #1e293b",
-    borderRadius: "12px",
-    padding: "1.25rem",
-    color: "#e2e8f0",
+    backgroundColor: theme.colors.panelBg,
+    border: `1px solid ${theme.colors.panelBorder}`,
+    borderRadius: theme.layout.panelRadius,
+    padding: theme.layout.panelPadding,
+    color: theme.colors.textPrimary,
     display: "flex",
     flexDirection: "column",
-    gap: "0.75rem",
+    gap: "0.85rem",
+    boxShadow: theme.effects.panelShadow,
+    backdropFilter: "blur(18px)",
   },
   title: {
     margin: 0,
@@ -26,40 +29,43 @@ const styles: Record<string, React.CSSProperties> = {
   },
   description: {
     margin: 0,
-    color: "#cbd5f5",
+    color: theme.colors.textSecondary,
     fontSize: "0.95rem",
+    lineHeight: 1.6,
   },
   status: {
     fontSize: "0.85rem",
-    color: "#38bdf8",
+    color: theme.colors.textAccent,
   },
   warning: {
     fontSize: "0.85rem",
-    color: "#f97316",
+    color: theme.colors.textWarning,
   },
   error: {
     fontSize: "0.85rem",
-    color: "#f87171",
+    color: theme.colors.textError,
   },
   info: {
     fontSize: "0.85rem",
-    color: "#94a3b8",
-    backgroundColor: "#0f172a",
-    border: "1px solid #1e293b",
-    borderRadius: "0.65rem",
+    color: theme.colors.textSecondary,
+    backgroundColor: theme.colors.infoPanelBg,
+    border: `1px solid ${theme.colors.controlBorderMuted}`,
+    borderRadius: "0.75rem",
     padding: "0.75rem",
+    lineHeight: 1.5,
   },
   textarea: {
     width: "100%",
-    backgroundColor: "#020617",
-    color: "#f8fafc",
-    border: "1px solid #334155",
-    borderRadius: "0.65rem",
+    backgroundColor: theme.colors.controlBg,
+    color: theme.colors.textPrimary,
+    border: `1px solid ${theme.colors.controlBorder}`,
+    borderRadius: "0.75rem",
     padding: "0.75rem",
     resize: "vertical",
     fontSize: "0.95rem",
     lineHeight: 1.5,
     minHeight: "6rem",
+    fontFamily: theme.typography.mono,
   },
   buttonRow: {
     display: "flex",
@@ -70,9 +76,10 @@ const styles: Record<string, React.CSSProperties> = {
   modeToggle: {
     display: "inline-flex",
     borderRadius: "999px",
-    border: "1px solid #1e293b",
+    border: `1px solid ${theme.colors.controlBorderMuted}`,
     overflow: "hidden",
-    backgroundColor: "#020617",
+    backgroundColor: theme.colors.controlBg,
+    boxShadow: "inset 0 0 0 1px rgba(3, 10, 24, 0.6)",
   },
   modeButton: {
     padding: "0.45rem 0.9rem",
@@ -81,53 +88,75 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: "pointer",
     background: "transparent",
     border: "none",
-    color: "#94a3b8",
+    color: theme.colors.textMuted,
     transition: "background-color 0.2s ease, color 0.2s ease",
   },
   modeButtonActive: {
-    backgroundColor: "#1d4ed8",
-    color: "#f8fafc",
+    backgroundColor: theme.colors.actionPrimaryBg,
+    color: theme.colors.actionPrimaryText,
   },
   runButton: {
-    backgroundColor: "#22c55e",
-    color: "#04111f",
-    border: "none",
-    borderRadius: "0.65rem",
-    padding: "0.6rem 0.9rem",
+    backgroundColor: theme.colors.actionPrimaryBg,
+    color: theme.colors.actionPrimaryText,
+    border: `1px solid ${theme.colors.actionPrimaryBorder}`,
+    borderRadius: "0.75rem",
+    padding: "0.6rem 1rem",
     fontWeight: 600,
     cursor: "pointer",
     fontSize: "0.95rem",
+    letterSpacing: "0.01em",
+    boxShadow: theme.effects.glow,
   },
   secondaryButton: {
-    backgroundColor: "#1e293b",
-    color: "#e2e8f0",
-    border: "1px solid #334155",
-    borderRadius: "0.65rem",
-    padding: "0.55rem 0.85rem",
+    backgroundColor: theme.colors.actionSecondaryBg,
+    color: theme.colors.actionSecondaryText,
+    border: `1px solid ${theme.colors.actionSecondaryBorder}`,
+    borderRadius: "0.75rem",
+    padding: "0.55rem 0.9rem",
     fontWeight: 600,
     cursor: "pointer",
     fontSize: "0.9rem",
+    transition: "background-color 0.2s ease, border-color 0.2s ease",
   },
   runButtonDisabled: {
     opacity: 0.4,
     cursor: "not-allowed",
+    boxShadow: "none",
   },
   metaRow: {
     display: "flex",
     flexWrap: "wrap",
     gap: "1rem",
     fontSize: "0.85rem",
-    color: "#94a3b8",
+    color: theme.colors.textMuted,
+  },
+  fieldLabel: {
+    fontSize: "0.85rem",
+    color: theme.colors.textSecondary,
+    letterSpacing: "0.01em",
+  },
+  keystreamLabel: {
+    fontSize: "0.85rem",
+    color: theme.colors.textMuted,
+    marginBottom: "0.35rem",
   },
   keystreamList: {
     margin: 0,
     padding: 0,
     display: "flex",
-    gap: "0.5rem",
+    gap: "0.45rem",
     listStyle: "none",
     flexWrap: "wrap",
-    fontFamily: "Fira Code, Source Code Pro, Menlo, monospace",
+    fontFamily: theme.typography.mono,
     fontSize: "0.85rem",
+  },
+  keystreamItem: {
+    backgroundColor: theme.colors.controlBg,
+    border: `1px solid ${theme.colors.controlBorderMuted}`,
+    borderRadius: "0.5rem",
+    padding: "0.25rem 0.5rem",
+    color: theme.colors.textAccent,
+    boxShadow: "inset 0 0 0 1px rgba(2, 8, 23, 0.4)",
   },
 };
 
@@ -329,11 +358,11 @@ export const CipherEngine: React.FC<CipherEngineProps> = ({
       ) : null}
       {pendingDeck ? (
         <div style={styles.info}>
-          Your original deck stays untouched until you apply the advanced deck. This mirrors using the same key
-          twice—only commit the new order when you&apos;re ready to continue the sequence.
+          Your original deck stays untouched until you apply the advanced deck. This mirrors using the same key twice—only
+          commit the new order when you&apos;re ready to continue the sequence.
         </div>
       ) : null}
-      <label style={{ fontSize: "0.85rem", color: "#cbd5f5" }} htmlFor="cipher-output">
+      <label style={styles.fieldLabel} htmlFor="cipher-output">
         {mode === "encrypt" ? "Cipher text" : "Recovered plaintext"}
       </label>
       <textarea
@@ -349,12 +378,12 @@ export const CipherEngine: React.FC<CipherEngineProps> = ({
       />
       {keystreamPreview.length > 0 ? (
         <div>
-          <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "0.35rem" }}>
-            First {keystreamPreview.length} keystream values:
-          </div>
+          <div style={styles.keystreamLabel}>First {keystreamPreview.length} keystream values:</div>
           <ul style={styles.keystreamList}>
             {keystreamPreview.map((value, index) => (
-              <li key={`${value}-${index}`}>{value}</li>
+              <li key={`${value}-${index}`} style={styles.keystreamItem}>
+                {value}
+              </li>
             ))}
           </ul>
         </div>

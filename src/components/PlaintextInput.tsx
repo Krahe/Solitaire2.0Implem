@@ -1,5 +1,6 @@
 import React from "react";
 import type { SanitizationResult } from "../logic/classifier";
+import { theme } from "../styles/theme";
 
 export interface PlaintextInputProps {
   value: string;
@@ -60,7 +61,7 @@ export const PlaintextInput: React.FC<PlaintextInputProps> = ({
         value={sanitized.value}
         readOnly
         rows={6}
-        style={{ ...styles.textarea, backgroundColor: "#0f172a" }}
+        style={{ ...styles.textarea, backgroundColor: theme.colors.infoPanelBg }}
       />
       {modifications.length > 0 ? (
         <details style={styles.details}>
@@ -78,22 +79,24 @@ export const PlaintextInput: React.FC<PlaintextInputProps> = ({
             ))}
           </ul>
         </details>
-      ) : (
-        <p style={{ ...styles.description, color: "#94a3b8" }}>
-          No normalization needed—your text already fits the cipher alphabet.
-        </p>
-      )}
+        ) : (
+          <p style={{ ...styles.description, color: theme.colors.textMuted }}>
+            No normalization needed—your text already fits the cipher alphabet.
+          </p>
+        )}
     </section>
   );
 };
 
 const styles: Record<string, React.CSSProperties> = {
   card: {
-    backgroundColor: "#0b1120",
-    border: "1px solid #1e293b",
-    borderRadius: "12px",
-    padding: "1.25rem",
-    color: "#e2e8f0",
+    backgroundColor: theme.colors.panelBg,
+    border: `1px solid ${theme.colors.panelBorder}`,
+    borderRadius: theme.layout.panelRadius,
+    padding: theme.layout.panelPadding,
+    color: theme.colors.textPrimary,
+    boxShadow: theme.effects.panelShadow,
+    backdropFilter: "blur(18px)",
   },
   title: {
     marginTop: 0,
@@ -104,25 +107,29 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: 0,
     marginBottom: "0.75rem",
     fontSize: "0.95rem",
-    color: "#cbd5f5",
+    color: theme.colors.textSecondary,
+    lineHeight: 1.6,
   },
   label: {
     display: "block",
     marginBottom: "0.35rem",
     fontSize: "0.85rem",
-    color: "#cbd5f5",
+    color: theme.colors.textSecondary,
+    letterSpacing: "0.01em",
   },
   textarea: {
     width: "100%",
-    backgroundColor: "#020617",
-    color: "#f8fafc",
-    border: "1px solid #334155",
-    borderRadius: "0.65rem",
+    backgroundColor: theme.colors.controlBg,
+    color: theme.colors.textPrimary,
+    border: `1px solid ${theme.colors.controlBorder}`,
+    borderRadius: "0.75rem",
     padding: "0.75rem",
     resize: "vertical",
     fontSize: "0.95rem",
     lineHeight: 1.5,
     marginBottom: "0.75rem",
+    fontFamily: theme.typography.mono,
+    boxShadow: "inset 0 0 0 1px rgba(2, 8, 23, 0.4)",
   },
   summaryRow: {
     display: "flex",
@@ -130,15 +137,16 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     fontSize: "0.85rem",
     marginBottom: "0.75rem",
-    color: "#94a3b8",
+    color: theme.colors.textMuted,
   },
   limitNotice: {
-    backgroundColor: "#1d4ed8",
-    color: "#e0f2fe",
-    borderRadius: "0.5rem",
-    padding: "0.5rem 0.75rem",
+    backgroundColor: theme.colors.headerAccent,
+    color: theme.colors.actionSecondaryText,
+    borderRadius: "0.65rem",
+    padding: "0.55rem 0.85rem",
     fontSize: "0.85rem",
     marginBottom: "0.75rem",
+    boxShadow: theme.effects.glow,
   },
   details: {
     marginTop: "0.5rem",
@@ -146,7 +154,7 @@ const styles: Record<string, React.CSSProperties> = {
   summary: {
     cursor: "pointer",
     fontSize: "0.85rem",
-    color: "#a855f7",
+    color: theme.colors.textAccent,
   },
   list: {
     marginTop: "0.5rem",
@@ -157,14 +165,15 @@ const styles: Record<string, React.CSSProperties> = {
   },
   listItem: {
     fontSize: "0.85rem",
-    color: "#cbd5f5",
+    color: theme.colors.textSecondary,
   },
   code: {
-    backgroundColor: "#1e293b",
+    backgroundColor: theme.colors.controlBg,
     padding: "0.15rem 0.35rem",
-    borderRadius: "0.35rem",
+    borderRadius: "0.4rem",
+    border: `1px solid ${theme.colors.controlBorderMuted}`,
   },
   reason: {
-    color: "#38bdf8",
+    color: theme.colors.textAccent,
   },
 };

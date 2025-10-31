@@ -1,4 +1,5 @@
 import React from "react";
+import { theme } from "../styles/theme";
 
 export interface QuantumControlsProps {
   nx: number;
@@ -12,21 +13,24 @@ const styles: Record<string, React.CSSProperties> = {
     position: "fixed",
     bottom: "1.5rem",
     right: "1.5rem",
-    backgroundColor: "rgba(11, 17, 32, 0.95)",
-    border: "1px solid #1e293b",
-    borderRadius: "12px",
-    padding: "1rem",
-    color: "#e2e8f0",
+    backgroundColor: theme.colors.infoPanelBg,
+    border: `1px solid ${theme.colors.panelBorder}`,
+    borderRadius: theme.layout.panelRadius,
+    padding: "1rem 1.15rem",
+    color: theme.colors.textPrimary,
     zIndex: 100,
     minWidth: "240px",
-    backdropFilter: "blur(8px)",
+    backdropFilter: "blur(12px)",
+    boxShadow: theme.effects.panelShadow,
   },
   title: {
     margin: 0,
     fontSize: "0.9rem",
     fontWeight: 600,
     marginBottom: "0.75rem",
-    color: "#94a3b8",
+    color: theme.colors.textSecondary,
+    letterSpacing: "0.05em",
+    textTransform: "uppercase",
   },
   controlGroup: {
     display: "flex",
@@ -41,20 +45,21 @@ const styles: Record<string, React.CSSProperties> = {
   label: {
     fontSize: "0.85rem",
     minWidth: "3rem",
-    fontFamily: "Fira Code, Source Code Pro, Menlo, monospace",
+    fontFamily: theme.typography.mono,
+    color: theme.colors.textMuted,
   },
   value: {
     fontSize: "0.85rem",
     fontWeight: 600,
     minWidth: "1.5rem",
     textAlign: "right",
-    fontFamily: "Fira Code, Source Code Pro, Menlo, monospace",
-    color: "#38bdf8",
+    fontFamily: theme.typography.mono,
+    color: theme.colors.textAccent,
   },
   info: {
     marginTop: "0.75rem",
     fontSize: "0.75rem",
-    color: "#64748b",
+    color: theme.colors.textMuted,
     lineHeight: 1.4,
   },
 };
