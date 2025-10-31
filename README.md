@@ -1,18 +1,3 @@
-Absolutely. I'll draft a full `README.md` you can drop straight into the repo root.
-
-This does a few things at once:
-
-* explains what the tool is and how to use it,
-* frames the philosophy (covenant / sovereignty / partnership),
-* sets expectations (this is an educational cipher, not NSA),
-* documents workflow for contributors (including our multi-agent setup and journal),
-* hints at your broader synthesis work so interested people can go read the memo.
-
-You can edit tone up/down after, but this is a strong public-facing starting point.
-
----
-
-````markdown
 # Solitaire Cipher Playground
 
 A handheld, human-auditable stream cipher simulator — built for teaching operational discipline, not for hiding behind magic.
