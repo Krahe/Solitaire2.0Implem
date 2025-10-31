@@ -61,7 +61,7 @@ export const PlaintextInput: React.FC<PlaintextInputProps> = ({
         value={sanitized.value}
         readOnly
         rows={6}
-        style={{ ...styles.textarea, backgroundColor: theme.colors.infoPanelBg }}
+        style={{ ...styles.textarea, backgroundColor: theme.colors.panelBgSecondary }}
       />
       {modifications.length > 0 ? (
         <details style={styles.details}>
@@ -79,11 +79,11 @@ export const PlaintextInput: React.FC<PlaintextInputProps> = ({
             ))}
           </ul>
         </details>
-        ) : (
-          <p style={{ ...styles.description, color: theme.colors.textMuted }}>
-            No normalization needed—your text already fits the cipher alphabet.
-          </p>
-        )}
+      ) : (
+        <p style={{ ...styles.description, color: theme.colors.textMuted }}>
+          No normalization needed—your text already fits the cipher alphabet.
+        </p>
+      )}
     </section>
   );
 };
@@ -95,85 +95,79 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: theme.layout.panelRadius,
     padding: theme.layout.panelPadding,
     color: theme.colors.textPrimary,
-    boxShadow: theme.effects.panelShadow,
-    backdropFilter: "blur(18px)",
   },
   title: {
     marginTop: 0,
-    marginBottom: "0.75rem",
-    fontSize: "1.25rem",
+    marginBottom: theme.layout.gapSmall,
+    fontSize: theme.typography.sizeLG,
   },
   description: {
     marginTop: 0,
-    marginBottom: "0.75rem",
-    fontSize: "0.95rem",
+    marginBottom: theme.layout.gapSmall,
+    fontSize: theme.typography.sizeMD,
     color: theme.colors.textSecondary,
-    lineHeight: 1.6,
   },
   label: {
     display: "block",
-    marginBottom: "0.35rem",
-    fontSize: "0.85rem",
+    marginBottom: theme.layout.gapTiny,
+    fontSize: theme.typography.sizeSM,
     color: theme.colors.textSecondary,
-    letterSpacing: "0.01em",
   },
   textarea: {
     width: "100%",
-    backgroundColor: theme.colors.controlBg,
+    backgroundColor: theme.colors.inputBg,
     color: theme.colors.textPrimary,
-    border: `1px solid ${theme.colors.controlBorder}`,
-    borderRadius: "0.75rem",
-    padding: "0.75rem",
+    border: `1px solid ${theme.colors.inputBorder}`,
+    borderRadius: theme.layout.buttonRadius,
+    padding: theme.layout.gapSmall,
     resize: "vertical",
-    fontSize: "0.95rem",
-    lineHeight: 1.5,
-    marginBottom: "0.75rem",
+    fontSize: theme.typography.sizeMD,
     fontFamily: theme.typography.mono,
-    boxShadow: "inset 0 0 0 1px rgba(2, 8, 23, 0.4)",
+    lineHeight: 1.5,
+    marginBottom: theme.layout.gapSmall,
   },
   summaryRow: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    fontSize: "0.85rem",
-    marginBottom: "0.75rem",
+    fontSize: theme.typography.sizeSM,
+    marginBottom: theme.layout.gapSmall,
     color: theme.colors.textMuted,
   },
   limitNotice: {
-    backgroundColor: theme.colors.headerAccent,
-    color: theme.colors.actionSecondaryText,
-    borderRadius: "0.65rem",
-    padding: "0.55rem 0.85rem",
-    fontSize: "0.85rem",
-    marginBottom: "0.75rem",
-    boxShadow: theme.effects.glow,
+    backgroundColor: theme.colors.accentBright,
+    color: theme.colors.textPrimary,
+    borderRadius: theme.layout.buttonRadius,
+    padding: "0.5rem 0.75rem",
+    fontSize: theme.typography.sizeSM,
+    marginBottom: theme.layout.gapSmall,
   },
   details: {
     marginTop: "0.5rem",
   },
   summary: {
     cursor: "pointer",
-    fontSize: "0.85rem",
-    color: theme.colors.textAccent,
+    fontSize: theme.typography.sizeSM,
+    color: theme.colors.accent,
   },
   list: {
     marginTop: "0.5rem",
     marginBottom: 0,
-    paddingLeft: "1.25rem",
+    paddingLeft: theme.layout.panelPadding,
     display: "grid",
-    gap: "0.35rem",
+    gap: theme.layout.gapTiny,
   },
   listItem: {
-    fontSize: "0.85rem",
+    fontSize: theme.typography.sizeSM,
     color: theme.colors.textSecondary,
   },
   code: {
-    backgroundColor: theme.colors.controlBg,
+    backgroundColor: theme.colors.panelBorder,
     padding: "0.15rem 0.35rem",
-    borderRadius: "0.4rem",
-    border: `1px solid ${theme.colors.controlBorderMuted}`,
+    borderRadius: theme.layout.gapTiny,
+    fontFamily: theme.typography.mono,
   },
   reason: {
-    color: theme.colors.textAccent,
+    color: theme.colors.accent,
   },
 };
