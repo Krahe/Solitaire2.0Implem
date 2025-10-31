@@ -1,65 +1,41 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-const SAMPLE_DECK = [1, 2, 53, 54];
+import { deckToCode, codeToDeck, deckFingerprint } from "../deckCode";
+import { createOrderedDeck } from "../deck";
 
-function rangeHex(length: number): string {
-  return Array.from({ length }, (_, index) => index.toString(16).padStart(2, "0")).join("");
+function makeInvalidDeck(): number[] {
+  return [...createOrderedDeck()];
 }
 
-describe("deckFingerprint environmental support", () => {
-  beforeEach(() => {
-    vi.resetModules();
-    vi.clearAllMocks();
-    vi.unmock("node:crypto");
+describe("deckCode", () => {
+  it("round-trips a valid deck", () => {
+    const deck = createOrderedDeck();
+    const code = deckToCode(deck);
+
+    expect(code).toHaveLength(108);
+    expect(codeToDeck(code)).toEqual(deck);
+    expect(deckFingerprint(deck)).toMatch(/^[0-9A-F]{8}$/);
   });
 
-  afterEach(() => {
-    vi.resetModules();
-    vi.clearAllMocks();
-    vi.unmock("node:crypto");
-    vi.unstubAllGlobals();
+  it("rejects decks with duplicate cards", () => {
+    const deck = makeInvalidDeck();
+    deck[1] = deck[0];
+
+    expect(() => deckToCode(deck)).toThrow(/appears more than once/);
   });
 
-  it("uses the Web Crypto API when available", async () => {
-    const digestBuffer = new Uint8Array(Array.from({ length: 32 }, (_, index) => index)).buffer;
-    const digestMock = vi.fn().mockResolvedValue(digestBuffer);
+  it("rejects decks missing either joker", () => {
+    const deck = makeInvalidDeck();
+    deck.pop();
+    deck.push(52);
 
-    vi.stubGlobal("crypto", {
-      subtle: {
-        digest: digestMock,
-      },
-    });
-
-    const { deckFingerprint } = await import("../deckCode");
-    const fingerprint = await deckFingerprint(SAMPLE_DECK);
-
-    expect(digestMock).toHaveBeenCalledTimes(1);
-    const [algorithm, payload] = digestMock.mock.calls[0];
-    expect(algorithm).toBe("SHA-256");
-    expect(ArrayBuffer.isView(payload)).toBe(true);
-    expect(fingerprint).toBe(rangeHex(32));
+    expect(() => deckToCode(deck)).toThrow(/joker/i);
   });
 
-  it("falls back to Node's crypto when Web Crypto is unavailable", async () => {
-    const updateMock = vi.fn().mockReturnThis();
-    const digestMock = vi.fn().mockReturnValue("nodehash");
-    const createHashMock = vi.fn(() => ({
-      update: updateMock,
-      digest: digestMock,
-    }));
+  it("rejects decks containing out-of-range values", () => {
+    const deck = makeInvalidDeck();
+    deck[0] = 0;
 
-    vi.doMock("node:crypto", () => ({
-      createHash: createHashMock,
-    }));
-
-    vi.stubGlobal("crypto", undefined);
-
-    const { deckFingerprint } = await import("../deckCode");
-    const fingerprint = await deckFingerprint(SAMPLE_DECK);
-
-    expect(createHashMock).toHaveBeenCalledWith("sha256");
-    expect(updateMock).toHaveBeenCalledWith("1,2,53,54", "utf8");
-    expect(digestMock).toHaveBeenCalledWith("hex");
-    expect(fingerprint).toBe("nodehash");
+    expect(() => deckToCode(deck)).toThrow(/between 1 and 54/);
   });
 });

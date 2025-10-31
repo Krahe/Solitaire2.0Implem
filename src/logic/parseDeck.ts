@@ -1,4 +1,5 @@
 import type { Deck } from "./deck";
+import { validateDeckPermutation } from "./deckValidation";
 
 export interface ParseResult {
   ok: boolean;
@@ -61,16 +62,7 @@ export function parseDeckVector(input: string): ParseResult {
     };
   }
 
-  if (rawTokens.length !== 54) {
-    return {
-      ok: false,
-      deck: null,
-      error: `Expected 54 cards, received ${rawTokens.length}.`,
-    };
-  }
-
   const deck: number[] = [];
-  const seen = new Set<number>();
 
   for (const token of rawTokens) {
     const parsed = parseToken(token);
@@ -81,24 +73,15 @@ export function parseDeckVector(input: string): ParseResult {
         error: `Unrecognized token "${token}". Use 1-52 or jokers A/B.`,
       };
     }
-
-    if (seen.has(parsed)) {
-      return {
-        ok: false,
-        deck: null,
-        error: `Card ${parsed === 53 ? "A" : parsed === 54 ? "B" : parsed} appears more than once.`,
-      };
-    }
-
-    seen.add(parsed);
     deck.push(parsed);
   }
 
-  if (!seen.has(53) || !seen.has(54)) {
+  const validationError = validateDeckPermutation(deck);
+  if (validationError) {
     return {
       ok: false,
       deck: null,
-      error: "Deck must include exactly one A joker and one B joker.",
+      error: validationError,
     };
   }
 
