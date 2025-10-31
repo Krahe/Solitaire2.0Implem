@@ -43,14 +43,6 @@ const styles: Record<string, React.CSSProperties> = {
     minWidth: "3rem",
     fontFamily: "Fira Code, Source Code Pro, Menlo, monospace",
   },
-  slider: {
-    flex: 1,
-    height: "4px",
-    borderRadius: "2px",
-    outline: "none",
-    appearance: "none",
-    background: "#1e293b",
-  },
   value: {
     fontSize: "0.85rem",
     fontWeight: 600,
@@ -92,7 +84,7 @@ export const QuantumControls: React.FC<QuantumControlsProps> = ({
             step="1"
             value={nx}
             onChange={(e) => onNxChange(parseInt(e.target.value, 10))}
-            style={styles.slider}
+            className="quantum-slider"
           />
           <span style={styles.value}>{nx}</span>
         </div>
@@ -108,7 +100,7 @@ export const QuantumControls: React.FC<QuantumControlsProps> = ({
             step="1"
             value={ny}
             onChange={(e) => onNyChange(parseInt(e.target.value, 10))}
-            style={styles.slider}
+            className="quantum-slider"
           />
           <span style={styles.value}>{ny}</span>
         </div>
