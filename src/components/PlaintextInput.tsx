@@ -1,5 +1,6 @@
 import React from "react";
 import type { SanitizationResult } from "../logic/classifier";
+import { theme } from "../styles/theme";
 
 export interface PlaintextInputProps {
   value: string;
@@ -60,7 +61,7 @@ export const PlaintextInput: React.FC<PlaintextInputProps> = ({
         value={sanitized.value}
         readOnly
         rows={6}
-        style={{ ...styles.textarea, backgroundColor: "#0f172a" }}
+        style={{ ...styles.textarea, backgroundColor: theme.colors.panelBgSecondary }}
       />
       {modifications.length > 0 ? (
         <details style={styles.details}>
@@ -79,7 +80,7 @@ export const PlaintextInput: React.FC<PlaintextInputProps> = ({
           </ul>
         </details>
       ) : (
-        <p style={{ ...styles.description, color: "#94a3b8" }}>
+        <p style={{ ...styles.description, color: theme.colors.textMuted }}>
           No normalization needed—your text already fits the cipher alphabet.
         </p>
       )}
@@ -89,82 +90,84 @@ export const PlaintextInput: React.FC<PlaintextInputProps> = ({
 
 const styles: Record<string, React.CSSProperties> = {
   card: {
-    backgroundColor: "#0b1120",
-    border: "1px solid #1e293b",
-    borderRadius: "12px",
-    padding: "1.25rem",
-    color: "#e2e8f0",
+    backgroundColor: theme.colors.panelBg,
+    border: `1px solid ${theme.colors.panelBorder}`,
+    borderRadius: theme.layout.panelRadius,
+    padding: theme.layout.panelPadding,
+    color: theme.colors.textPrimary,
   },
   title: {
     marginTop: 0,
-    marginBottom: "0.75rem",
-    fontSize: "1.25rem",
+    marginBottom: theme.layout.gapSmall,
+    fontSize: theme.typography.sizeLG,
   },
   description: {
     marginTop: 0,
-    marginBottom: "0.75rem",
-    fontSize: "0.95rem",
-    color: "#cbd5f5",
+    marginBottom: theme.layout.gapSmall,
+    fontSize: theme.typography.sizeMD,
+    color: theme.colors.textSecondary,
   },
   label: {
     display: "block",
-    marginBottom: "0.35rem",
-    fontSize: "0.85rem",
-    color: "#cbd5f5",
+    marginBottom: theme.layout.gapTiny,
+    fontSize: theme.typography.sizeSM,
+    color: theme.colors.textSecondary,
   },
   textarea: {
     width: "100%",
-    backgroundColor: "#020617",
-    color: "#f8fafc",
-    border: "1px solid #334155",
-    borderRadius: "0.65rem",
-    padding: "0.75rem",
+    backgroundColor: theme.colors.inputBg,
+    color: theme.colors.textPrimary,
+    border: `1px solid ${theme.colors.inputBorder}`,
+    borderRadius: theme.layout.buttonRadius,
+    padding: theme.layout.gapSmall,
     resize: "vertical",
-    fontSize: "0.95rem",
+    fontSize: theme.typography.sizeMD,
+    fontFamily: theme.typography.mono,
     lineHeight: 1.5,
-    marginBottom: "0.75rem",
+    marginBottom: theme.layout.gapSmall,
   },
   summaryRow: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    fontSize: "0.85rem",
-    marginBottom: "0.75rem",
-    color: "#94a3b8",
+    fontSize: theme.typography.sizeSM,
+    marginBottom: theme.layout.gapSmall,
+    color: theme.colors.textMuted,
   },
   limitNotice: {
-    backgroundColor: "#1d4ed8",
-    color: "#e0f2fe",
-    borderRadius: "0.5rem",
+    backgroundColor: theme.colors.accentBright,
+    color: theme.colors.textPrimary,
+    borderRadius: theme.layout.buttonRadius,
     padding: "0.5rem 0.75rem",
-    fontSize: "0.85rem",
-    marginBottom: "0.75rem",
+    fontSize: theme.typography.sizeSM,
+    marginBottom: theme.layout.gapSmall,
   },
   details: {
     marginTop: "0.5rem",
   },
   summary: {
     cursor: "pointer",
-    fontSize: "0.85rem",
-    color: "#a855f7",
+    fontSize: theme.typography.sizeSM,
+    color: theme.colors.accent,
   },
   list: {
     marginTop: "0.5rem",
     marginBottom: 0,
-    paddingLeft: "1.25rem",
+    paddingLeft: theme.layout.panelPadding,
     display: "grid",
-    gap: "0.35rem",
+    gap: theme.layout.gapTiny,
   },
   listItem: {
-    fontSize: "0.85rem",
-    color: "#cbd5f5",
+    fontSize: theme.typography.sizeSM,
+    color: theme.colors.textSecondary,
   },
   code: {
-    backgroundColor: "#1e293b",
+    backgroundColor: theme.colors.panelBorder,
     padding: "0.15rem 0.35rem",
-    borderRadius: "0.35rem",
+    borderRadius: theme.layout.gapTiny,
+    fontFamily: theme.typography.mono,
   },
   reason: {
-    color: "#38bdf8",
+    color: theme.colors.accent,
   },
 };
