@@ -88,6 +88,10 @@ export const theme = {
     shadowPanel: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
     shadowGlow: '0 0 20px rgba(56, 189, 248, 0.15)',
 
+    // Focus
+    focusRing: '0 0 0 3px rgba(56, 189, 248, 0.4)',
+    focusRingGlow: '0 0 0 3px rgba(56, 189, 248, 0.4), 0 0 12px rgba(56, 189, 248, 0.3)',
+
     // Backdrop
     backdropBlur: 'blur(8px)',
   },

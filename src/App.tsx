@@ -4,6 +4,7 @@ import { PlaintextInput } from "./components/PlaintextInput";
 import { CipherEngine } from "./components/CipherEngine";
 import { QuantumBackground } from "./components/QuantumBackground";
 import { QuantumControls } from "./components/QuantumControls";
+import { GlobalStyles } from "./styles/GlobalStyles";
 import { sanitizeToCipherAlphabet } from "./logic/classifier";
 import type { Deck } from "./logic/deck";
 import { parseDeckVector } from "./logic/parseDeck";
@@ -244,6 +245,7 @@ function App(): JSX.Element {
 
   return (
     <div style={containerStyle}>
+      <GlobalStyles />
       <QuantumBackground nx={quantumNx} ny={quantumNy} opacity={0.35} />
       <QuantumControls
         nx={quantumNx}
