@@ -21,9 +21,8 @@ const gridStyle: React.CSSProperties = {
   zIndex: 1,
   display: "grid",
   gap: theme.layout.gapBetweenPanels,
-  maxWidth: "1400px", // Wider for widescreen
+  maxWidth: "1400px", // Wide single column
   margin: "0 auto",
-  gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))", // Widescreen 2-col
 };
 
 const headerStyle: React.CSSProperties = {
