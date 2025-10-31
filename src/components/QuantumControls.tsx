@@ -127,7 +127,7 @@ export const QuantumControls: React.FC<QuantumControlsProps> = ({
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} data-quantum-controls="true">
       <div style={{ display: "flex", alignItems: "center", marginBottom: "0.75rem" }}>
         <h3 style={{ ...styles.title, margin: 0 }}>Quantum Field</h3>
         <span
