@@ -264,7 +264,9 @@ async function sha256Hex(payload: string): Promise<string> {
 
   // Node fallback
   try {
-    const nodeCrypto: typeof import("node:crypto") = await import("node:crypto");
+    const nodeCrypto = await import(
+      /* @vite-ignore */ /* webpackIgnore: true */ ("node:crypto" as string),
+    );
     if (typeof nodeCrypto.createHash !== "function") {
       throw new Error("createHash is not available");
     }
@@ -274,9 +276,28 @@ async function sha256Hex(payload: string): Promise<string> {
       .update(payload, "utf8")
       .digest("hex");
   } catch (error) {
-    throw new Error(NO_CRYPTO_SUPPORT_MESSAGE, {
-      cause: error instanceof Error ? error : undefined,
-    });
+    try {
+      const nodeCryptoFallback = await import(
+        /* @vite-ignore */ /* webpackIgnore: true */ ("crypto" as string),
+      );
+      if (typeof nodeCryptoFallback.createHash !== "function") {
+        throw new Error("createHash is not available");
+      }
+
+      return nodeCryptoFallback
+        .createHash("sha256")
+        .update(payload, "utf8")
+        .digest("hex");
+    } catch (fallbackError) {
+      throw new Error(NO_CRYPTO_SUPPORT_MESSAGE, {
+        cause:
+          fallbackError instanceof Error
+            ? fallbackError
+            : error instanceof Error
+              ? error
+              : undefined,
+      });
+    }
   }
 }
 
